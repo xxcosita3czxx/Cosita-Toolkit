@@ -73,6 +73,8 @@ class github_api:
         page = requests.get(url)
         if file_name is None:
             file_name = strftime(f"{name}%Y-%m-%d-%H-%M-%S-last-info-raw.json", gmtime())
+        if save_place is not None and not save_place.endswith("/"):
+            save_place = save_place + "/"
         if save_place is None:
             save_place = ""
         final = str(save_place+file_name)
