@@ -80,4 +80,9 @@ class github_api:
         final = str(save_place+file_name)
         with open(final, "w") as f:
             json.dump(json.loads(page.text), f, indent=4)
+        return "OK"
+    def get_info_usr(name):
+        url = f"https://api.github.com/users/{name}/events/public"
+        page = requests.get(url)
+        text = page.text
 github_api.get_last_info_raw("xxcosita3czxx")
