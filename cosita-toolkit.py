@@ -12,7 +12,7 @@ PROCESS_VM_READ = 0x0010
 SIZEOF_INT = ctypes.sizeof(ctypes.c_int)
 
 # services.json
-services_json = '''{
+services_json_raw = '''{
   "services": [
     { "service": "Instagram", "endpoint": "/check/instagram/{username}" },
     { "service": "TikTok", "endpoint": "/check/tiktok/{username}" },
@@ -150,7 +150,7 @@ services_json = '''{
     { "service": "Makerlog", "endpoint": "/check/makerlog/{username}" }
   ]
 }'''
-
+services_json = json.loads(services_json_raw)
 
 ## end of variables
 
@@ -231,21 +231,25 @@ class github_api:
         text = page.text
 class osint_framework:
     class universal:
-        def check_username(username):
-            data = json.load(services_json)
+        def check_username(username, service_name="All"):
+            base_url = "http://api.instantusername.com"
+            services = services_json["services"]
 
-            services = data["services"]
-
+            results = []
             for service in services:
-                service_name = service["service"]
+                current_service_name = service["service"]
                 endpoint = service["endpoint"]
 
-                check_url = endpoint.replace("{username}", username)
+                if service_name != "All" and current_service_name != service_name:
+                    continue
+
+                check_url = f"{base_url}{endpoint}".replace("{username}", username)
                 response = requests.get(check_url)
 
-                if response.status_code == 200:
-                    print(f"Username '{username}' is used on {service_name}.")
-                    return True
+                result = {current_service_name: response.status_code == 200}
+                results.append(result)
 
-            print(f"Username '{username}' is not used on any service.")
-            return False
+                if service_name != "All":
+                    break
+            return results
+print(osint_framework.universal.check_username("cosita3cz"))
