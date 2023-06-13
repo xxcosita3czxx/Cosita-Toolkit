@@ -4,8 +4,31 @@ import psutil
 import requests
 import json
 from time import gmtime, strftime
+import pytest
 ## variables needed for code to work
+LICENSE = """
+MIT License
 
+Copyright (c) 2023 xxcosita3czxx
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+"""
 
 PROCESS_ALL_ACCESS = 0x1F0FFF
 PROCESS_VM_READ = 0x0010
@@ -159,7 +182,6 @@ def main():
     print ("yet not supported")
 # windows memory editor
 class memMod:
-    @staticmethod
     def pid_by_name(target_string,exe_name):
         for proc in psutil.process_iter(['pid', 'name', 'create_time']):
             try:
@@ -211,7 +233,6 @@ class memMod:
         ctypes.windll.kernel32.CloseHandle(process_handle)
         return value
 class github_api:
-    @staticmethod
     def get_last_info_raw(name,save_place=None,file_name=None):
         url = f"https://api.github.com/users/{name}/events/public"
         page = requests.get(url)
@@ -230,7 +251,6 @@ class github_api:
         page = requests.get(url)
         text = page.text
 class PokeAPI:
-    @staticmethod
     def get_pokemon_raw(name):
         url = f"https://pokeapi.co/api/v2/pokemon/{name}"
         page = requests.get(url)
