@@ -229,6 +229,14 @@ class github_api:
         url = f"https://api.github.com/users/{name}/events/public"
         page = requests.get(url)
         text = page.text
+class PokeAPI:
+    @staticmethod
+    def get_pokemon_raw(name):
+        url = f"https://pokeapi.co/api/v2/pokemon/{name}"
+        page = requests.get(url)
+        text = page.text
+        return text
+
 class osint_framework:
     class universal:
         def check_username(username, service_name="All"):
@@ -252,4 +260,3 @@ class osint_framework:
                 if service_name != "All":
                     break
             return results
-print(osint_framework.universal.check_username("cosita3cz"))
