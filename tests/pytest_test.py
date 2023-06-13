@@ -1,4 +1,4 @@
-import cosita_toolkit as costk
+from ..cosita_toolkit import *
 
 def test_gitapi():
     costk.github_api.get_last_info_raw("xxcosita3czxx")
