@@ -1,5 +1,5 @@
 pywin32; platform_system == 'Windows'
-ctypes
+ctypes; platform_system == 'Windows'
 psutil
 json
 pytest
