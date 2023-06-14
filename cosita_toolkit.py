@@ -1,12 +1,12 @@
-import ctypes
 import platform
 if platform.system() == "Windows":
     import win32gui
+    import ctypes
 import psutil
 import requests
 import json
 from time import gmtime, strftime
-
+import discord
 
 ## variables needed for code to work
 LICENSE = """
@@ -262,6 +262,7 @@ class github_api:
         url = f"https://api.github.com/users/{name}/events/public"
         page = requests.get(url)
         text = page.text
+        text_json = json.loads(text)
 class PokeAPI:
     def get_pokemon_raw(name):
         url = f"https://pokeapi.co/api/v2/pokemon/{name}"
@@ -292,5 +293,28 @@ class osint_framework:
                 if service_name != "All":
                     break
             return results
+class discord:
+    class embeds:
+        def embed(title, description, color=None):
+            embed = discord.Embed(title=title, description=description, color=color)
+            return embed
+        def add_field(embed, name, value, inline=True):
+            embed.add_field(name=name, value=value, inline=inline)
+
+        def set_author(embed, name, url=None, icon_url=None):
+            embed.set_author(name=name, url=url, icon_url=icon_url)
+
+        def set_thumbnail(embed, url):
+            embed.set_thumbnail(url=url)
+
+        def set_image(embed, url):
+            embed.set_image(url=url)
+
+        def set_footer(embed, text, icon_url=None):
+            embed.set_footer(text=text, icon_url=icon_url)
+
+        def set_timestamp(embed, timestamp=None):
+            embed.timestamp = timestamp
+        
 if __name__ == "__main__":
     main()
