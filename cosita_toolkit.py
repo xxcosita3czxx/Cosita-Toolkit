@@ -279,6 +279,7 @@ class memMod:
             return value
         else:
             return "Non-windows system detected! skipping..."
+# github api things
 class github_api:
     def get_last_info_raw(name,save_place=None,file_name=None):
         url = f"https://api.github.com/users/{name}/events/public"
@@ -298,13 +299,14 @@ class github_api:
         page = requests.get(url)
         text = page.text
         text_json = json.loads(text)
+# pokeAPI things
 class PokeAPI:
     def get_pokemon_raw(name):
         url = f"https://pokeapi.co/api/v2/pokemon/{name}"
         page = requests.get(url)
         text = page.text
         return text
-
+# tools only osinters use
 class osint_framework:
     class universal:
         def check_username(username, service_name="All"):
@@ -328,6 +330,7 @@ class osint_framework:
                 if service_name != "All":
                     break
             return results
+# discord helping
 class discord:
     class embeds:
         def embed(title, description, color=None):
