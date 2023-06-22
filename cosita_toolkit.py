@@ -70,8 +70,10 @@ SOFTWARE.
 
 PROCESS_ALL_ACCESS = 0x1F0FFF
 PROCESS_VM_READ = 0x0010
-SIZEOF_INT = ctypes.sizeof(ctypes.c_int)
-
+try:
+    SIZEOF_INT = ctypes.sizeof(ctypes.c_int)
+except:
+    print("ctypes not workin/not a windows system, skipping...")
 # services.json
 services_json_raw = '''{
   "services": [
