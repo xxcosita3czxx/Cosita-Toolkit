@@ -3,3 +3,4 @@ ctypes; platform_system == 'Windows'
 psutil
 pytest
 requests
+discord
