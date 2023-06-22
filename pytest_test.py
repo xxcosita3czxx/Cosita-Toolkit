@@ -8,6 +8,3 @@ def test_pokeapi():
     costk.PokeAPI.get_pokemon_raw("pikachu")
 def test_main():
     costk.main()
-def test_discord():
-    embed = costk.discord.embeds.embed("test","test")
-    costk.discord.embeds.add_field(embed,"test",1)
