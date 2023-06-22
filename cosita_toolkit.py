@@ -222,7 +222,7 @@ def main():
     print ("yet not supported")
 # windows memory editor
 class memMod:
-    def pid_by_name(target_string,exe_name):
+    def pid_by_name(target_string=[], exe_name=[]):
         if platform.system() == "Windows":
             for proc in psutil.process_iter(['pid', 'name', 'create_time']):
                 try:
@@ -231,7 +231,7 @@ class memMod:
                     def callback(hwnd, hwnds):
                         if win32gui.IsWindowVisible(hwnd):
                             title = win32gui.GetWindowText(hwnd)
-                            if target_string in title:
+                            if any(t in title for t in target_string):
                                 hwnds.append(hwnd)
                     win32gui.EnumWindows(callback, hwnds)
                     # If we found a matching window, check the parent process
@@ -240,15 +240,15 @@ class memMod:
                             pid = proc.pid
                             parent_pid = proc.ppid()
                             parent_name = psutil.Process(parent_pid).name()
-                            exe_name = psutil.Process(proc.pid).exe()
+                            exe_name = psutil.Process(proc.pid).exe() if not exe_name else exe_name
                             if proc.name() == exe_name:
                                 #print(f"Found process with window title containing {target_string} and PID {pid} and name: {exe_name}")
                                 return pid
                         except psutil.AccessDenied:
-                    # Access denied - ignore this process
+                            # Access denied - ignore this process
                             pass
                         except psutil.NoSuchProcess:
-                    # Process may have terminated while iterating
+                            # Process may have terminated while iterating
                             pass
                 except:
                     pass
@@ -256,7 +256,7 @@ class memMod:
                 print(f"No process found with window title containing {target_string}")
                 return None
         else:
-            return "Non-windows system detected! skipping..."
+            return "Non-Windows system detected! skipping..."
     def modify(pid, address, new_value):
         if platform.system()=="Windows":
             new_value = ctypes.c_int(new_value)
@@ -336,7 +336,7 @@ class osint_framework:
 class discord:
     class embeds:
         def embed(title, description, color=None):
-            embed = discord.Embed(*, title=title, description=description, color=color)
+            embed = discord.Embed(title=title, description=description, color=color)
             return embed
         def add_field(embed, name, value, inline=True):
             embed.add_field(name=name, value=value, inline=inline)
