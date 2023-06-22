@@ -336,7 +336,7 @@ class osint_framework:
 class discord:
     class embeds:
         def embed(title, description, color=None):
-            embed = discord.Embed(title=title, description=description, color=color)
+            embed = discord.Embed(*, title=title, description=description, color=color)
             return embed
         def add_field(embed, name, value, inline=True):
             embed.add_field(name=name, value=value, inline=inline)
