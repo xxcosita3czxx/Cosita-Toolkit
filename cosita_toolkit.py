@@ -333,28 +333,3 @@ class osint_framework:
                     break
             return results
 # discord helping
-class discord:
-    class embeds:
-        def embed(title, description, color=None):
-            embed = discord.Embed(title=title, description=description, color=color)
-            return embed
-        def add_field(embed, name, value, inline=True):
-            embed.add_field(name=name, value=value, inline=inline)
-
-        def set_author(embed, name, url=None, icon_url=None):
-            embed.set_author(name=name, url=url, icon_url=icon_url)
-
-        def set_thumbnail(embed, url):
-            embed.set_thumbnail(url=url)
-
-        def set_image(embed, url):
-            embed.set_image(url=url)
-
-        def set_footer(embed, text, icon_url=None):
-            embed.set_footer(text=text, icon_url=icon_url)
-
-        def set_timestamp(embed, timestamp=None):
-            embed.timestamp = timestamp
-        
-if __name__ == "__main__":
-    main()
