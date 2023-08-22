@@ -51,7 +51,7 @@ def update_script_from_github():
             print("Failed to fetch the script from GitHub.")
         os.chdir(orig_dir)
     except:
-        return "updater error"
+        print ("updater error")
 update_script_from_github()
 ## variables needed for code to work
 LICENSE = """
