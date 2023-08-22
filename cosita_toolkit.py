@@ -332,4 +332,51 @@ class osint_framework:
                 if service_name != "All":
                     break
             return results
-# discord helping
+
+# OS Specific things
+class OSspecific:
+    class Linux:
+        def get_linux_distro():
+            try:
+                with open('/etc/os-release', 'r') as f:
+                    lines = f.readlines()
+                    distro_name = ""
+                    distro_id = ""
+
+                    for line in lines:
+                        if line.startswith('PRETTY_NAME='):
+                            distro_name = line.split('=')[1].strip().strip('"')
+                        elif line.startswith('ID='):
+                            distro_id = line.split('=')[1].strip().strip('"')
+                            break  # Stop reading after finding the ID field
+
+                    if distro_id == "arch":
+                        return f"{distro_name} (Based on Arch)"
+                    elif distro_id == "debian":
+                        return f"{distro_name} (Based on Debian)"
+                    else:
+                        return f"{distro_name} (Custom or Unknown: {distro_id})"
+            except FileNotFoundError:
+                pass
+            return "Unknown"
+    class Windows:
+        def get_windows_product_key():
+            try:
+                import winreg
+                key_path = r"SOFTWARE\Microsoft\Windows NT\CurrentVersion"
+                value_name = "DigitalProductId"
+
+                with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, key_path) as key:
+                    product_key_bytes = winreg.QueryValueEx(key, value_name)[0]
+                
+                product_key = ""
+                for b in product_key_bytes[52:67]:
+                    product_key += "%02x" % b
+                    return product_key
+            except:
+                return platform.system()
+# Other
+def upload_to_transfer_sh(file_path):
+    with open(file_path, 'rb') as file:
+        response = requests.put('https://transfer.sh/' + file_path, data=file)
+        return response.text.strip()
