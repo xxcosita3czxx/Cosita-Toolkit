@@ -10,6 +10,7 @@ import discord
 import base64
 def update_script_from_github():
     # Specify the details for the file update
+    os.chdir(os.path.dirname(os.path.abspath(__file__)))
     owner = "xxcosita3czxx"
     repo = "Cosita-ToolKit"
     file_path = "cosita_toolkit.py"
