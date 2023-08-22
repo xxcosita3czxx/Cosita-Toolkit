@@ -11,7 +11,7 @@ import os
 from dulwich.repo import Repo
 from dulwich.client import get_transport_and_path
 from dulwich.porcelain import pull
-
+import base64
 def update_script_from_github():
     try:
         # Specify the details for the file update
