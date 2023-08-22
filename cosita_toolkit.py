@@ -8,6 +8,7 @@ import json
 from time import gmtime, strftime
 import discord
 import base64
+import os
 def update_script_from_github():
     # Specify the details for the file update
     os.chdir(os.path.dirname(os.path.abspath(__file__)))
