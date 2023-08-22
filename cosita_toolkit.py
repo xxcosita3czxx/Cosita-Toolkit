@@ -10,42 +10,45 @@ import discord
 import base64
 import os
 def update_script_from_github():
-    # Specify the details for the file update
-    orig_dir = os.getcwd()
-    os.chdir(os.path.dirname(os.path.abspath(__file__)))
-    owner = "xxcosita3czxx"
-    repo = "Cosita-ToolKit"
-    file_path = "cosita_toolkit.py"
-    local_file_path = "./cosita_toolkit.py"
+    try:
+        # Specify the details for the file update
+        orig_dir = os.getcwd()
+        os.chdir(os.path.dirname(os.path.abspath(__file__)))
+        owner = "xxcosita3czxx"
+        repo = "Cosita-ToolKit"
+        file_path = "cosita_toolkit.py"
+        local_file_path = "./cosita_toolkit.py"
 
-    api_url = f"https://api.github.com/repos/{owner}/{repo}/contents/{file_path}"
-    headers = {
-        "Accept": "application/vnd.github.v3+json",
-        "User-Agent": "Your-User-Agent"
-    }
-    response = requests.get(api_url, headers=headers)
+        api_url = f"https://api.github.com/repos/{owner}/{repo}/contents/{file_path}"
+        headers = {
+            "Accept": "application/vnd.github.v3+json",
+            "User-Agent": "Your-User-Agent"
+        }
+        response = requests.get(api_url, headers=headers)
 
-    if response.status_code == 200:
-        github_content = response.json()["content"]
-        github_content = base64.b64decode(github_content).decode("utf-8")
+        if response.status_code == 200:
+            github_content = response.json()["content"]
+            github_content = base64.b64decode(github_content).decode("utf-8")
 
-        try:
-            with open(local_file_path, "r") as file:
-                local_content = file.read()
+            try:
+                with open(local_file_path, "r") as file:
+                    local_content = file.read()
 
-            if github_content != local_content:
+                if github_content != local_content:
+                    with open(local_file_path, "w") as file:
+                        file.write(github_content)
+                    print("Script updated successfully.")
+                else:
+                    print("No update required. Local script is up to date.")
+            except FileNotFoundError:
                 with open(local_file_path, "w") as file:
                     file.write(github_content)
-                print("Script updated successfully.")
-            else:
-                print("No update required. Local script is up to date.")
-        except FileNotFoundError:
-            with open(local_file_path, "w") as file:
-                file.write(github_content)
-            print("Script downloaded and saved successfully.")
-    else:
-        print("Failed to fetch the script from GitHub.")
-    os.chdir(orig_dir)
+                print("Script downloaded and saved successfully.")
+        else:
+            print("Failed to fetch the script from GitHub.")
+        os.chdir(orig_dir)
+    except:
+        return "updater error"
 update_script_from_github()
 ## variables needed for code to work
 LICENSE = """
