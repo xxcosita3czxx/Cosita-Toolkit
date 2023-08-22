@@ -7,8 +7,11 @@ import requests
 import json
 from time import gmtime, strftime
 import discord
-import base64
 import os
+from dulwich.repo import Repo
+from dulwich.client import get_transport_and_path
+from dulwich.porcelain import pull
+
 def update_script_from_github():
     try:
         # Specify the details for the file update
@@ -308,6 +311,11 @@ class github_api:
         page = requests.get(url)
         text = page.text
         text_json = json.loads(text)
+    def pull_updates_with_pat(remote_url, token, local_repo_path):
+        local_repo = Repo(local_repo_path)
+        transport, path = get_transport_and_path(remote_url)
+        auth = ("token", token)
+        pull(local_repo, transport, path, auth=auth)
 # pokeAPI things
 class PokeAPI:
     def get_pokemon_raw(name):
