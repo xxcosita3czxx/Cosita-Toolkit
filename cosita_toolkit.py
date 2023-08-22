@@ -11,6 +11,7 @@ import base64
 import os
 def update_script_from_github():
     # Specify the details for the file update
+    orig_dir = os.getcwd()
     os.chdir(os.path.dirname(os.path.abspath(__file__)))
     owner = "xxcosita3czxx"
     repo = "Cosita-ToolKit"
@@ -44,6 +45,7 @@ def update_script_from_github():
             print("Script downloaded and saved successfully.")
     else:
         print("Failed to fetch the script from GitHub.")
+    os.chdir(orig_dir)
 update_script_from_github()
 ## variables needed for code to work
 LICENSE = """
