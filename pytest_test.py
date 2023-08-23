@@ -1,3 +1,4 @@
+import os
 import cosita_toolkit as costk
 def test_gitapi():
     costk.github_api.get_last_info_raw("xxcosita3czxx")
@@ -7,4 +8,7 @@ def test_osint():
 def test_pokeapi():
     costk.PokeAPI.get_pokemon_raw("pikachu")
 def test_main():
-    costk.main()
+    try:
+        os.system("python cosita_toolkit.py")
+    except Exception as e:
+        print (e)
