@@ -37,14 +37,18 @@ def update_script_from_github(owner, repo, file_path, local_file_path):
                     with open(local_file_path, "w") as file:
                         file.write(github_content)
                     print("Script updated successfully.")
+                    return 1
                 else:
                     print("No update required. Local script is up to date.")
+                    return 2
             except FileNotFoundError:
                 with open(local_file_path, "w") as file:
                     file.write(github_content)
                 print("Script downloaded and saved successfully.")
+                return 7
         else:
             print("Failed to fetch the script from GitHub.")
+            return 3
         os.chdir(orig_dir)
     except:
         print ("updater error")
