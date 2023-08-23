@@ -4,3 +4,4 @@ psutil
 pytest
 requests
 discord
+dulwich
