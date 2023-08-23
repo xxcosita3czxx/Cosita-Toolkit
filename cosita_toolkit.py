@@ -6,7 +6,6 @@ import psutil
 import requests
 import json
 from time import gmtime, strftime
-import discord
 import os
 from dulwich.repo import Repo
 from dulwich.client import get_transport_and_path
@@ -317,6 +316,11 @@ class github_api:
         transport, path = get_transport_and_path(remote_url)
         auth = ("token", token)
         pull(local_repo, transport, path, auth=auth)
+
+    def pull_updates(remote_url, local_repo_path):
+        local_repo = Repo(local_repo_path)
+        transport, path = get_transport_and_path(remote_url)
+        pull(local_repo, transport, path)
 # pokeAPI things
 class PokeAPI:
     def get_pokemon_raw(name):
