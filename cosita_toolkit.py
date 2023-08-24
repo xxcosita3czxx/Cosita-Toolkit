@@ -7,10 +7,8 @@ import requests
 import json
 from time import gmtime, strftime
 import os
-from dulwich.repo import Repo
-from dulwich.client import get_transport_and_path
-from dulwich.porcelain import pull
 import base64
+from git import Repo
 def update_script_from_github(owner, repo, file_path, local_file_path):
     try:
         # Specify the details for the file update
@@ -323,16 +321,14 @@ class github_api:
         page = requests.get(url)
         text = page.text
         text_json = json.loads(text)
-    def pull_updates_with_pat(remote_url, token, local_repo_path):
-        local_repo = Repo(local_repo_path)
-        transport, path = get_transport_and_path(remote_url)
-        auth = ("token", token)
-        pull(local_repo, transport, path, auth=auth)
-
-    def pull_updates(remote_url, local_repo_path):
-        local_repo = Repo(local_repo_path)
-        transport, path = get_transport_and_path(remote_url)
-        pull(local_repo, transport, path)
+        return text_json
+    def pull_changes(repo_dir):
+        try:
+            repo = Repo(repo_dir)
+            origin = repo.remote()
+            origin.pull()
+        except Exception as e:
+            return f"Install Git or report this error: {e}"
 # pokeAPI things
 class PokeAPI:
     def get_pokemon_raw(name):
