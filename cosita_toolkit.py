@@ -15,6 +15,9 @@ import base64
 from git import Repo
 
 def update_script_from_github(owner, repo, file_path, local_file_path):
+    '''
+    Updating from github, so you dont have to download always from git
+    '''
     try:
         # Specify the details for the file update
         if __name__ == "__main__":
@@ -68,7 +71,6 @@ if __name__ == "__main__":
     update_script_from_github(owner = "xxcosita3czxx", repo = "Cosita-ToolKit", file_path = "cosita_toolkit.py", local_file_path = "./cosita_toolkit.py")
 ## variables needed for code to work
 LICENSE = """
-
 
 MIT License
 
@@ -242,12 +244,19 @@ services_json = json.loads(services_json_raw)
 
 ## end of variables
 
-# MAIN
+
 def main():
     print ("yet not supported")
-# windows memory editor
+
+
 class memMod:
+    '''
+    Requires windows, bcs linux works different way
+    '''
     def pid_by_name(target_string=[], exe_name=[]):
+        '''
+        Get proccess pid by its name, pid needed for memory editing
+        '''
         if platform.system() == "Windows":
             for proc in psutil.process_iter(['pid', 'name', 'create_time']):
                 try:
@@ -283,6 +292,9 @@ class memMod:
         else:
             return "Non-Windows system detected! skipping..."
     def modify(pid, address, new_value):
+        '''
+        Here is the actuall edit of memory
+        '''
         if platform.system()=="Windows":
             new_value = ctypes.c_int(new_value)
             process_handle = ctypes.windll.kernel32.OpenProcess(PROCESS_ALL_ACCESS, False, pid)
@@ -296,6 +308,9 @@ class memMod:
         else:
             return "Non-windows system detected! skipping..."
     def check(pid, address):
+        '''
+        get current value
+        '''
         if platform.system()=="Windows":
             process_handle = ctypes.windll.kernel32.OpenProcess(PROCESS_VM_READ, False, pid)
             buffer = ctypes.create_string_buffer(SIZEOF_INT)
