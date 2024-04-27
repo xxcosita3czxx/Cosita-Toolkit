@@ -389,36 +389,68 @@ class github_api:
         if response.status_code == 200:
             # Extract the latest commit hash
             latest_commit_hash = response.json().get('sha')
-            
-            # Get the hash of the file content from GitHub
-            file_content = get_file_content(owner, repo, file_path)
-            if file_content is not None:
-                file_hash = compute_file_hash(file_content)
-                if file_hash != latest_commit_hash:
-                    print(f"Updates available for '{file_path}'. Downloading...")
-    
-                    # Specify the URL of the file to download
-                    url = f"https://raw.githubusercontent.com/{owner}/{repo}/{branch}/{file_path}"
-                    # Specify the local filename to save the downloaded file
-                    # Send a GET request to the URL
-                    response = requests.get(url)
-    
-                    # Check if the request was successful (status code 200)
-                    if response.status_code == 200:
-                        # Open the local file in binary write mode and write the content from the response
-                        with open(file_path, 'wb') as f:
-                            f.write(response.content)
+            if file_content:
+                # Get the hash of the file content from GitHub
+                file_content = get_file_content(owner, repo, file_path)
+                if file_content is not None:
+                    file_hash = compute_file_hash(file_content)
+                    if file_hash != latest_commit_hash:
+                        print(f"Updates available for '{file_path}'. Downloading...")
+        
+                        # Specify the URL of the file to download
+                        url = f"https://raw.githubusercontent.com/{owner}/{repo}/{branch}/{file_path}"
+                        # Specify the local filename to save the downloaded file
+                        # Send a GET request to the URL
+                        response = requests.get(url)
+        
+                        # Check if the request was successful (status code 200)
+                        if response.status_code == 200:
+                            # Open the local file in binary write mode and write the content from the response
+                            with open(file_path, 'wb') as f:
+                                f.write(response.content)
+                        else:
+                            print(f"Failed to download file from '{url}'. Response code: {response.status_code}")
+                            return "Failed"
+                        print(f"Updates for '{file_path}' downloaded successfully.")
+                        return 2
                     else:
-                        print(f"Failed to download file from '{url}'. Response code: {response.status_code}")
-                        return "Failed"
-                    print(f"Updates for '{file_path}' downloaded successfully.")
-                    return 2
+                        print(f"No updates available for '{file_path}'.")
+                        return 0
                 else:
-                    print(f"No updates available for '{file_path}'.")
-                    return 0
+                    print("Unable to compute file hash. Check if the file exists.")
+                    return 404
             else:
-                print("Unable to compute file hash. Check if the file exists.")
-                return 404
+                # If no file path is specified, iterate through every file in the current directory
+                try:
+                    for file_name in os.listdir('.'):
+                        if os.path.isfile(file_name):
+                            print(f"Checking for updates to '{file_name}'...")
+                            file_content = get_file_content(owner, repo, file_name)
+                            if file_content is not None:
+                                file_hash = compute_file_hash(file_content)
+                                if file_hash != latest_commit_hash:
+                                    print(f"Updates available for '{file_name}'. Downloading...")
+                                    url = f"https://raw.githubusercontent.com/{owner}/{repo}/{branch}/{file_name}"
+                                    # Specify the local filename to save the downloaded file
+                                    # Send a GET request to the URL
+                                    response = requests.get(url)
+                    
+                                    # Check if the request was successful (status code 200)
+                                    if response.status_code == 200:
+                                        # Open the local file in binary write mode and write the content from the response
+                                        with open(file_name, 'wb') as f:
+                                            f.write(response.content)
+                                    else:
+                                        print(f"Failed to download file from '{url}'. Response code: {response.status_code}")
+                                        return "Failed"
+                                    print(f"Updates for '{file_name}' downloaded successfully.")
+                                else:
+                                    print(f"No updates available for '{file_name}'.")
+                            else:
+                                print("Unable to compute file hash. Check if the file exists.")
+                 except:
+                     print("update successful")
+                     return 2
         else:
             print(f"Failed to fetch commit information from GitHub. Response code: {response.status_code}")
             print("Response content:", response.text)
