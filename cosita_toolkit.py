@@ -554,7 +554,7 @@ class Networking:
             ip = subnet + "." + str(i)
             Networking.check_ip_existence(ip, result_list)
 
-    def get_router_gateway_ip():
+    def get_gateway_ip():
         try:
             # Get the default gateway's IP address (cross-platform)
             gateways = netifaces.gateways()
