@@ -6,3 +6,5 @@ requests
 discord
 dulwich
 netifaces
+logging
+coloredlogs
