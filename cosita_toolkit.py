@@ -384,6 +384,7 @@ class github_api:
                 return response.status_code
     
         # GitHub API endpoint to fetch the latest commit
+				 file_content=None
         url = f"https://api.github.com/repos/{owner}/{repo}/commits/{branch}"
         
         # Make a GET request to the GitHub API
