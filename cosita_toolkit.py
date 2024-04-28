@@ -31,23 +31,83 @@ SOFTWARE.
 
 #------------------------------------------------------#
 
-import platform
-if platform.system() == "Windows":
-    import win32gui
-    import ctypes
-import subprocess
-import netifaces
-import psutil
-import socket
-import threading
-import requests
-import json
-from time import gmtime, strftime
-import os
-import base64
-import logging
-import coloredlogs
-coloredlogs.install(level='DEBUG', fmt='%(asctime)s %(levelname)s: %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
+############   MODULE IMPORTS   ############
+
+try:
+    import logging
+except:
+    print ("FATAL: cannot import logging")
+
+try:
+    import coloredlogs
+    coloredlogs.install(level='DEBUG', fmt='%(asctime)s %(levelname)s: %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
+except:
+    logger.warning("will not be using colors, as the module cannot be found")
+
+try:
+    import platform
+except:
+    logger.fatal("Failed to import base module platform")
+
+try:
+    if platform.system() == "Windows":
+        import win32gui
+        import ctypes
+    else:
+        logger.debug("not importing windows depends")
+except:
+    logger.warning("Windows Dependendencies not found, could have limitations")
+
+try:
+    import subprocess
+except:
+    logger.warning("Module smubproccess not found, could have limitations")
+
+try:
+    import netifaces
+except:
+    logger.warning("Module netifaces not found, could have limitations")
+
+try:
+    import psutil
+except:
+    logger.warning("Module psutil not found, could have limitations")
+
+try:
+    import socket
+except:
+    logger.warning("Module socket not found, could have limitations")
+
+try:
+    import threading
+except:
+    logger.warning("Module threading not found, could have limitations")
+
+try:
+    import requests
+except:
+    logger.warning("Module requests not found, could have limitations")
+
+try:
+    import json
+except:
+    logger.warning("Module json not found, could have limitations")
+
+try:
+    from time import gmtime, strftime
+except:
+    logger.warning("Module time not found, could have limitations")
+
+try:
+    import os
+except:
+    logger.warning("Module os not found, could have limitations")
+
+try:
+    import base64
+except:
+    logger.warning("Module base64 not found, could have limitations")
+
 
 def update_script_from_github(owner, repo, file_path, local_file_path):
     '''
@@ -110,6 +170,8 @@ if __name__ == "__main__":
 def main():
     logging.warning("yet not supported")
 
+
+############   FUNCTIONS   ############
 
 class memMod:
     '''
@@ -470,7 +532,7 @@ class Other:
             return response.text.strip()
             
 
-############   VARIABLES   ##############
+############   VARIABLES   ############
 
 try:
     SIZEOF_INT = ctypes.sizeof(ctypes.c_int)
