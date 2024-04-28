@@ -301,9 +301,8 @@ class github_api:
             else:
                 logging.error(f"Failed to fetch file '{file_path}' from the repository '{repo}'. Response code: {response.status_code}")
                 return response.status_code
-    
         # GitHub API endpoint to fetch the latest commit
-				 file_content=None
+        file_content=None
         url = f"https://api.github.com/repos/{owner}/{repo}/commits/{branch}"
         
         # Make a GET request to the GitHub API
