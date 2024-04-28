@@ -12,6 +12,9 @@ import json
 from time import gmtime, strftime
 import os
 import base64
+import logging
+import coloredlogs
+coloredlogs.install(level='DEBUG', fmt='%(asctime)s %(levelname)s: %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
 
 def update_script_from_github(owner, repo, file_path, local_file_path):
     '''
