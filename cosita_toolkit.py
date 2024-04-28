@@ -363,6 +363,7 @@ class github_api:
             return file_hash
     
         def get_file_content(owner, repo, file_path):
+				     file_content=None
             # GitHub API endpoint to fetch the contents of a file
             url = f"https://api.github.com/repos/{owner}/{repo}/contents/{file_path}"
             
