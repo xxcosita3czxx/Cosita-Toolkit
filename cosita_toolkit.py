@@ -361,12 +361,10 @@ class github_api:
             # Compute the hash of the file content
             file_hash = hashlib.sha256(file_content.encode()).hexdigest()
             return file_hash
-    
         def get_file_content(owner, repo, file_path):
-				     file_content=None
-            # GitHub API endpoint to fetch the contents of a file
+            file_content=None
+            # GitHub API endpoint to fetch the contents of a
             url = f"https://api.github.com/repos/{owner}/{repo}/contents/{file_path}"
-            
             # Make a GET request to the GitHub API
             response = requests.get(url)
             
