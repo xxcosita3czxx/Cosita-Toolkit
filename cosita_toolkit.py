@@ -61,7 +61,12 @@ except:
 try:
     import subprocess
 except:
-    logging.warning("Module smubproccess not found, could have limitations")
+    logging.warning("Module subproccess not found, could have limitations")
+
+try:
+    import hashlib
+except:
+    logging.warning("Module hashlib not found, could have limitations")
 
 try:
     import netifaces
