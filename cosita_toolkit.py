@@ -173,7 +173,7 @@ def update_script_from_github(owner, repo, file_path, local_file_path):
                     if __name__=="__main__":
                         os.chdir(orig_dir)
 
-                    return 1
+                    return 101
                 else:
 
                     logging.info("No update required. Local script is up to date.")
@@ -181,7 +181,7 @@ def update_script_from_github(owner, repo, file_path, local_file_path):
                     if __name__=="__main__":
                         os.chdir(orig_dir)
 
-                    return 2
+                    return 100
 
             except FileNotFoundError:
 
@@ -193,7 +193,7 @@ def update_script_from_github(owner, repo, file_path, local_file_path):
                 if __name__=="__main__":
                     os.chdir(orig_dir)
 
-                return 7
+                return 102
         else:
 
             print("Failed to fetch the script from GitHub.")
@@ -273,11 +273,11 @@ class memMod:
 
             else:
                 logging.warning(f"No process found with window title containing {target_string}")
-                return None
+                return 404
 
         else:
             logging.warning("Non-Windows system detected! skipping...")
-            return "Non-Windows system detected! skipping..."
+            return 402
 
     def modify(pid, address, new_value):
 
@@ -299,8 +299,7 @@ class memMod:
 
         else:
             logging.warning("Non-Windows system detected! skipping...")
-            return "Non-windows system detected! skipping..."
-
+            return 402
     def check(pid, address):
 
         '''
@@ -320,7 +319,7 @@ class memMod:
         else:
 
             logging.warning("Non-Windows system detected! skipping...")
-            return "Non-windows system detected! skipping..."
+            return 402
 
 # github api things
 class github_api:
@@ -344,7 +343,7 @@ class github_api:
         with open(final, "w") as f:
             json.dump(json.loads(page.text), f, indent=4)
 
-        return 1
+        return 101
 
     def get_info_usr(name):
 
@@ -360,7 +359,7 @@ class github_api:
             repo = Repo(repo_dir)
             origin = repo.remote()
             pull_result = origin.pull()
-            return 2
+            return 101
         else:
             return 404
 
@@ -385,14 +384,14 @@ class github_api:
 
                 except KeyError:
                     logging.error("Failed to extract content from API response:", response.json())
-                    return "KeyError"
+                    return 401
 
             elif response.status_code == 404:
                 logging.debug(f"Ignoring {file_content}")
 
             else:
                 logging.error(f"Failed to fetch file '{file_path}' from the repository '{repo}'. Response code: {response.status_code}")
-                return response.status_code
+                return 400
 
         url = f"https://api.github.com/repos/{owner}/{repo}/commits/{branch}"
         response = requests.get(url)
@@ -418,14 +417,14 @@ class github_api:
 
                         else:
                             logging.error(f"Failed to download file from '{url}'. Response code: {response.status_code}")
-                            return "Failed"
+                            return 400
 
                         print(f"Updates for '{file_path}' downloaded successfully.")
-                        return 2
+                        return 101
 
                     else:
                         logging.info(f"No updates available for '{file_path}'.")
-                        return 0
+                        return 100
 
                 else:
                     logging.warning("Unable to compute file hash. Check if the file exists.")
@@ -474,7 +473,7 @@ class github_api:
             logging.error(f"Failed to fetch commit information from GitHub. Response code: {response.status_code}")
             logging.error("Response content:", response.text)
             return 404
-            
+
 # pokeAPI things
 class PokeAPI:
     def get_pokemon_raw(name):
