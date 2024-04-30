@@ -124,8 +124,6 @@ def update_script_from_github(owner, repo, file_path, local_file_path):
     Updating from github, so you dont have to download always from git
     '''
     try:
-        from git import Repo
-        # Specify the details for the file update
         if __name__ == "__main__":
             orig_dir = os.getcwd()
             os.chdir(os.path.dirname(os.path.abspath(__file__)))
