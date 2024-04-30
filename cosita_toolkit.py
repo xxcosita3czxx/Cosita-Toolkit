@@ -5,6 +5,11 @@
 #                                       #
 #########################################
 
+###  Config  ###############################################
+loglevel="INFO"
+# (Available: "DEBUG", "INFO", "WARNING", "ERROR", "FATAL")
+############################################################
+
 '''
 MIT License
 
@@ -40,7 +45,7 @@ except:
 
 try:
     import coloredlogs
-    coloredlogs.install(level='DEBUG', fmt='%(asctime)s %(levelname)s: %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
+    coloredlogs.install(level=loglevel, fmt='%(asctime)s %(levelname)s: %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
 except:
     logging.warning("will not be using colors, as the module cannot be found")
 
