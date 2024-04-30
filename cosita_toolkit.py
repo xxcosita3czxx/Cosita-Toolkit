@@ -136,7 +136,7 @@ def update_script_from_github(owner, repo, file_path, local_file_path):
             "User-Agent": "Cosita-Toolkit-Updater"
         }
         response = requests.get(api_url, headers=headers)
-        #print (response.status_code)
+        logging.debug(response.status_code)
         if response.status_code == 200:
             github_content = response.json()["content"]
             github_content = base64.b64decode(github_content).decode("utf-8")
