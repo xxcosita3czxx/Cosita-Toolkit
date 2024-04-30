@@ -46,75 +46,91 @@ except:
 try:
     import coloredlogs
     coloredlogs.install(level=loglevel, fmt='%(asctime)s %(levelname)s: %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
+
 except:
     logging.warning("will not be using colors, as the module cannot be found")
 
 try:
     import platform
+
 except:
     logging.fatal("Failed to import base module platform")
 
 try:
+
     if platform.system() == "Windows":
         import win32gui
         import ctypes
+
     else:
         logging.debug("not importing windows depends")
+
 except:
     logging.warning("Windows Dependendencies not found, could have limitations")
 
 try:
     import subprocess
+
 except:
     logging.warning("Module subproccess not found, could have limitations")
 
 try:
     import hashlib
+
 except:
     logging.warning("Module hashlib not found, could have limitations")
 
 try:
     import netifaces
+
 except:
     logging.warning("Module netifaces not found, could have limitations")
 
 try:
     import psutil
+
 except:
     logging.warning("Module psutil not found, could have limitations")
 
 try:
     import socket
+
 except:
     logging.warning("Module socket not found, could have limitations")
 
 try:
     import threading
+
 except:
     logging.warning("Module threading not found, could have limitations")
 
 try:
     import requests
+
 except:
     logging.warning("Module requests not found, could have limitations")
 
 try:
     import json
+
 except:
     logging.warning("Module json not found, could have limitations")
 
 try:
     from time import gmtime, strftime
+
 except:
     logging.warning("Module time not found, could have limitations")
 
 try:
     import os
+
 except:
     logging.warning("Module os not found, could have limitations")
 
 try:
     import base64
+
 except:
     logging.warning("Module base64 not found, could have limitations")
 
@@ -124,6 +140,7 @@ def update_script_from_github(owner, repo, file_path, local_file_path):
     Updating from github, so you dont have to download always from git
     '''
     try:
+
         if __name__ == "__main__":
             orig_dir = os.getcwd()
             os.chdir(os.path.dirname(os.path.abspath(__file__)))
@@ -135,42 +152,62 @@ def update_script_from_github(owner, repo, file_path, local_file_path):
         }
         response = requests.get(api_url, headers=headers)
         logging.debug(response.status_code)
+
         if response.status_code == 200:
+
             github_content = response.json()["content"]
             github_content = base64.b64decode(github_content).decode("utf-8")
 
             try:
+
                 with open(local_file_path, "r") as file:
                     local_content = file.read()
 
                 if github_content != local_content:
+
                     with open(local_file_path, "w") as file:
                         file.write(github_content)
+
                     logging.info("Script updated successfully.")
+
                     if __name__=="__main__":
                         os.chdir(orig_dir)
+
                     return 1
                 else:
+
                     logging.info("No update required. Local script is up to date.")
+
                     if __name__=="__main__":
                         os.chdir(orig_dir)
+
                     return 2
+
             except FileNotFoundError:
+
                 with open(local_file_path, "w") as file:
                     file.write(github_content)
+
                 logging.info("Script downloaded and saved successfully.")
+
                 if __name__=="__main__":
                     os.chdir(orig_dir)
+
                 return 7
         else:
+
             print("Failed to fetch the script from GitHub.")
+
             if __name__=="__main__":
                 os.chdir(orig_dir)
+
             return response.status_code
+
     except Exception as e:
         logging.error("updater error ->> "+str(e))
         os.chdir(orig_dir)
         return 400
+
 if __name__ == "__main__":
     update_script_from_github(owner = "xxcosita3czxx", repo = "Cosita-ToolKit", file_path = "cosita_toolkit.py", local_file_path = "./cosita_toolkit.py")
 
@@ -182,53 +219,74 @@ def main():
 ############   FUNCTIONS   ############
 
 class memMod:
+
     '''
     Requires windows, bcs linux works different way
     '''
+
     def pid_by_name(target_string=[], exe_name=[]):
+
         '''
         Get proccess pid by its name, pid needed for memory editing
         '''
+
         if platform.system() == "Windows":
+
             for proc in psutil.process_iter(['pid', 'name', 'create_time']):
+
                 try:
+
                     hwnds = []
-                    # Enumerate all windows and add the handle to the list if the target string is in the title
+
                     def callback(hwnd, hwnds):
+
                         if win32gui.IsWindowVisible(hwnd):
+
                             title = win32gui.GetWindowText(hwnd)
+
                             if any(t in title for t in target_string):
                                 hwnds.append(hwnd)
+
                     win32gui.EnumWindows(callback, hwnds)
-                    # If we found a matching window, check the parent process
+
                     if hwnds:
+
                         try:
+
                             pid = proc.pid
                             parent_pid = proc.ppid()
                             parent_name = psutil.Process(parent_pid).name()
                             exe_name = psutil.Process(proc.pid).exe() if not exe_name else exe_name
+
                             if proc.name() == exe_name:
                                 logging.debug(f"Found process with window title containing {target_string} and PID {pid} and name: {exe_name}")
                                 return pid
+
                         except psutil.AccessDenied:
-                            # Access denied - ignore this process
                             pass
+                        
                         except psutil.NoSuchProcess:
-                            # Process may have terminated while iterating
                             pass
+
                 except:
                     pass
+
             else:
                 logging.warning(f"No process found with window title containing {target_string}")
                 return None
+
         else:
             logging.warning("Non-Windows system detected! skipping...")
             return "Non-Windows system detected! skipping..."
+
     def modify(pid, address, new_value):
+
         '''
         Here is the actuall edit of memory
         '''
+
         if platform.system()=="Windows":
+
             new_value = ctypes.c_int(new_value)
             process_handle = ctypes.windll.kernel32.OpenProcess(PROCESS_ALL_ACCESS, False, pid)
             buffer = ctypes.create_string_buffer(SIZEOF_INT)
@@ -238,14 +296,19 @@ class memMod:
             ctypes.windll.kernel32.WriteProcessMemory(process_handle, address, ctypes.byref(new_value), SIZEOF_INT, None)
             ctypes.windll.kernel32.CloseHandle(process_handle)
             return 1
+
         else:
             logging.warning("Non-Windows system detected! skipping...")
             return "Non-windows system detected! skipping..."
+
     def check(pid, address):
+
         '''
         get current value
         '''
+
         if platform.system()=="Windows":
+
             process_handle = ctypes.windll.kernel32.OpenProcess(PROCESS_VM_READ, False, pid)
             buffer = ctypes.create_string_buffer(SIZEOF_INT)
             bytes_read = ctypes.c_size_t(0)
@@ -253,136 +316,165 @@ class memMod:
             value = ctypes.c_int.from_buffer(buffer).value
             ctypes.windll.kernel32.CloseHandle(process_handle)
             return value
+
         else:
+
             logging.warning("Non-Windows system detected! skipping...")
             return "Non-windows system detected! skipping..."
+
 # github api things
 class github_api:
+
     def get_last_info_raw(name,save_place=None,file_name=None):
+
         url = f"https://api.github.com/users/{name}/events/public"
         page = requests.get(url)
+
         if file_name is None:
             file_name = strftime(f"{name}%Y-%m-%d-%H-%M-%S-last-info-raw.json", gmtime())
+
         if save_place is not None and not save_place.endswith("/"):
             save_place = save_place + "/"
+
         if save_place is None:
             save_place = ""
+
         final = str(save_place+file_name)
+
         with open(final, "w") as f:
             json.dump(json.loads(page.text), f, indent=4)
+
         return 1
+
     def get_info_usr(name):
+
         url = f"https://api.github.com/users/{name}/events/public"
         page = requests.get(url)
         text = page.text
         text_json = json.loads(text)
         return text_json
+
     def pull_repo(repo_dir):
+
         if os.path.exists(repo_dir):
             repo = Repo(repo_dir)
             origin = repo.remote()
             pull_result = origin.pull()
-            return 2  # Successful pull with merge
+            return 2
         else:
-            return 404  # Repository does not exist
+            return 404
+
     def update_repo_files_http(owner, repo, branch, file_path):
+
         def compute_file_hash(file_content):
-            # Compute the hash of the file content
+
             file_hash = hashlib.sha256(file_content.encode()).hexdigest()
             return file_hash
+
         def get_file_content(owner, repo, file_path):
+
             file_content=None
-            # GitHub API endpoint to fetch the contents of a
             url = f"https://api.github.com/repos/{owner}/{repo}/contents/{file_path}"
-            # Make a GET request to the GitHub API
             response = requests.get(url)
             
-            # Check if the request was successful
             if response.status_code == 200:
-                # Extract the file content from the response
+
                 try:
                     file_content = base64.b64decode(response.json()['content']).decode()
                     return file_content
+
                 except KeyError:
                     logging.error("Failed to extract content from API response:", response.json())
                     return "KeyError"
+
             elif response.status_code == 404:
                 logging.debug(f"Ignoring {file_content}")
+
             else:
                 logging.error(f"Failed to fetch file '{file_path}' from the repository '{repo}'. Response code: {response.status_code}")
                 return response.status_code
-        file_content=None
+
         url = f"https://api.github.com/repos/{owner}/{repo}/commits/{branch}"
-        
-        # Make a GET request to the GitHub API
         response = requests.get(url)
         
-        # Check if the request was successful
         if response.status_code == 200:
-            # Extract the latest commit hash
             latest_commit_hash = response.json().get('sha')
+
             if file_content:
-                # Get the hash of the file content from GitHub
                 file_content = get_file_content(owner, repo, file_path)
+
                 if file_content is not None:
                     file_hash = compute_file_hash(file_content)
+
                     if file_hash != latest_commit_hash:
                         logging.info(f"Updates available for '{file_path}'. Downloading...")
                         url = f"https://raw.githubusercontent.com/{owner}/{repo}/{branch}/{file_path}"
                         response = requests.get(url)
         
-                        # Check if the request was successful (status code 200)
                         if response.status_code == 200:
-                            # Open the local file in binary write mode and write the content from the response
+
                             with open(file_path, 'wb') as f:
                                 f.write(response.content)
+
                         else:
                             logging.error(f"Failed to download file from '{url}'. Response code: {response.status_code}")
                             return "Failed"
+
                         print(f"Updates for '{file_path}' downloaded successfully.")
                         return 2
+
                     else:
                         logging.info(f"No updates available for '{file_path}'.")
                         return 0
+
                 else:
                     logging.warning("Unable to compute file hash. Check if the file exists.")
                     return 404
+
             else:
-                # If no file path is specified, iterate through every file in the current directory
+
                 try:
+
                     for file_name in os.listdir('.'):
+
                         if os.path.isfile(file_name):
                             logging.debug(f"Checking for updates to '{file_name}'...")
                             file_content = get_file_content(owner, repo, file_name)
+
                             if file_content is not None:
                                 file_hash = compute_file_hash(file_content)
+
                                 if file_hash != latest_commit_hash:
                                     logging.info(f"Updates available for '{file_name}'. Downloading...")
                                     url = f"https://raw.githubusercontent.com/{owner}/{repo}/{branch}/{file_name}"
-                                    # Specify the local filename to save the downloaded file
-                                    # Send a GET request to the URL
                                     response = requests.get(url)
-                    
-                                    # Check if the request was successful (status code 200)
+
                                     if response.status_code == 200:
-                                        # Open the local file in binary write mode and write the content from the response
+
                                         with open(file_name, 'wb') as f:
                                             f.write(response.content)
+
                                     else:
                                         logging.error(f"Failed to download file from '{url}'. Response code: {response.status_code}")
                                         return "Failed"
+
                                     logging.info(f"Updates for '{file_name}' downloaded successfully.")
+
                                 else:
                                     logging.info(f"No updates available for '{file_name}'.")
+
                             else:
                                 logging.warning("Unable to compute file hash. Check if the file exists.")
+
                 except:
                      logging.info("update successful")
                      return 2
+
         else:
             logging.error(f"Failed to fetch commit information from GitHub. Response code: {response.status_code}")
             logging.error("Response content:", response.text)
             return 404
+            
 # pokeAPI things
 class PokeAPI:
     def get_pokemon_raw(name):
