@@ -148,7 +148,7 @@ def update_script_from_github(owner, repo, file_path, local_file_path):
                 if github_content != local_content:
                     with open(local_file_path, "w") as file:
                         file.write(github_content)
-                    print("Script updated successfully.")
+                    logging.info("Script updated successfully.")
                     if __name__=="__main__":
                         os.chdir(orig_dir)
                     return 1
