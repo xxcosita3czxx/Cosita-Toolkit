@@ -63,8 +63,9 @@ except ImportError:
 try:
 
     if platform.system() == "Windows":
-        import win32gui
         import ctypes
+
+        import win32gui
 
     else:
         logging.debug("not importing windows depends")
@@ -157,7 +158,7 @@ def update_script_from_github(owner, repo, file_path, local_file_path):
         response = requests.get(api_url, headers=headers)
         logging.debug(response.status_code)
 
-        if response.status_code == 200:
+        if response.status_code == 200:  # noqa: PLR2004
 
             github_content = response.json()["content"]
             github_content = base64.b64decode(github_content).decode("utf-8")
@@ -235,7 +236,7 @@ class memMod:
     Requires windows, bcs linux works different way
     '''
 
-    def pid_by_name(target_string=[], exe_name=[]):
+    def pid_by_name(target_string=[], exe_name=[]):  # noqa: C901
 
         '''
         Get proccess pid by its name, pid needed for memory editing
@@ -397,7 +398,7 @@ class github_api:
         text_json = json.loads(text)
         return text_json
 
-    def update_repo_files_http(owner, repo, branch, file_path):
+    def update_repo_files_http(owner, repo, branch, file_path):  # noqa: C901
         file_content = None
         def compute_file_hash(file_content):
 
@@ -410,7 +411,7 @@ class github_api:
             url = f"https://api.github.com/repos/{owner}/{repo}/contents/{file_path}"
             response = requests.get(url)
             
-            if response.status_code == 200:
+            if response.status_code == 200:  # noqa: PLR2004
 
                 try:
                     file_content = base64.b64decode(
@@ -425,7 +426,7 @@ class github_api:
                     )
                     return 401
 
-            elif response.status_code == 404:
+            elif response.status_code == 404:  # noqa: PLR2004
                 logging.debug(f"Ignoring {file_content}")
 
             else:
@@ -437,7 +438,7 @@ class github_api:
         url = f"https://api.github.com/repos/{owner}/{repo}/commits/{branch}"
         response = requests.get(url)
         
-        if response.status_code == 200:
+        if response.status_code == 200:  # noqa: PLR2004
             latest_commit_hash = response.json().get('sha')
 
             if file_content:
@@ -453,7 +454,7 @@ class github_api:
                         url = f"https://raw.githubusercontent.com/{owner}/{repo}/{branch}/{file_path}"
                         response = requests.get(url)
         
-                        if response.status_code == 200:
+                        if response.status_code == 200:  # noqa: PLR2004
 
                             with open(file_path, 'wb') as f:
                                 f.write(response.content)
@@ -499,7 +500,7 @@ class github_api:
                                     url = f"https://raw.githubusercontent.com/{owner}/{repo}/{branch}/{file_name}"
                                     response = requests.get(url)
 
-                                    if response.status_code == 200:
+                                    if response.status_code == 200:  # noqa: PLR2004
 
                                         with open(file_name, 'wb') as f:
                                             f.write(response.content)
@@ -560,7 +561,7 @@ class osint_framework:
                 check_url = f"{base_url}{endpoint}".replace("{username}", username)
                 response = requests.get(check_url)
 
-                result = {current_service_name: response.status_code == 200}
+                result = {current_service_name: response.status_code == 200}  # noqa: PLR2004
                 results.append(result)
 
                 if service_name != "All":
