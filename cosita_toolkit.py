@@ -527,7 +527,20 @@ class github_api:
 
 # pokeAPI things
 class PokeAPI:
-    def get_pokemon_raw(name):
+    """PokeAPI functions from http API."""
+
+    def get_pokemon_raw(name = str):
+        """Get json of a pokemon.
+
+        Args:
+        ----
+            name (str): Name of the pokemon
+
+        Returns:
+        -------
+            str: json of the pokemon
+
+        """
         url = f"https://pokeapi.co/api/v2/pokemon/{name}"
         page = requests.get(url)
         text = page.text
@@ -539,7 +552,19 @@ class osint_framework:
     class universal:
         """Universal functions, have more at once."""
 
-        def check_username(username, service_name="All"):
+        def check_username(username = str, service_name="All"):
+            """Check username using instantusername.com API.
+
+            Args:
+            ----
+                username (str): Username you want to search
+                service_name (str, optional): Name of service you want. Defaults to "All".
+
+            Returns:
+            -------
+                str: json text 
+
+            """  # noqa: E501
             base_url = "http://api.instantusername.com"
             services = services_json["services"]
 
@@ -563,8 +588,19 @@ class osint_framework:
 
 # OS Specific things
 class OSspecific:
+    """Functions Specific for some systems."""
+
     class Linux:
+        """Linux specific functions."""
+
         def get_linux_distro():
+            """Get os-release from Linux System.
+
+            Returns
+            -------
+                str: Linux distro name
+
+            """
             try:
                 with open('/etc/os-release') as f:
                     lines = f.readlines()
@@ -607,6 +643,8 @@ class OSspecific:
                 return platform.system()
 # Networking tools
 class Networking:
+    """Functions related to Network."""
+
     def get_lan_ip():
         try:
             # Create a socket to the Google DNS server (8.8.8.8)
@@ -640,6 +678,7 @@ class Networking:
                 if "Received = 1" in output:
                     result_list.append(ip)
                     logging.info(f"Checked IP: {ip}")
+            return result_list
         except subprocess.CalledProcessError:
             pass
         except Exception as e:
@@ -678,14 +717,20 @@ class Networking:
 
         return result_list
 
-    def check_ip_range(subnet, start, end, result_list):
+    def check_ip_range(subnet, start=2, end=254):
         for i in range(start, end + 1):
             ip = subnet + "." + str(i)
-            Networking.check_ip_existence(ip, result_list)
+            Networking.check_ip_existence(ip)
 
     def get_gateway_ip():
+        """Get the default gateway's IP address (cross-platform).
+
+        Returns
+        -------
+            str: Ip adress
+
+        """
         try:
-            # Get the default gateway's IP address (cross-platform)
             gateways = netifaces.gateways()
             if 'default' in gateways and netifaces.AF_INET in gateways['default']:
                 return gateways['default'][netifaces.AF_INET][0]
@@ -695,7 +740,20 @@ class Networking:
             return None
 # Other
 class Upload:
-    def upload_to_transfer_sh(file_path):
+    """File uploading functions."""
+
+    def upload_to_transfer_sh(file_path = str):
+        """Will upload to transfer.sh.
+
+        Args:
+        ----
+            file_path (str): File to be uploaded
+
+        Returns:
+        -------
+            str: Response from the web
+
+        """
         with open(file_path, 'rb') as file:
             response = requests.put('https://transfer.sh/' + file_path, data=file)
             return response.text.strip()
