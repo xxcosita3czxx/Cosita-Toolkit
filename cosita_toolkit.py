@@ -1,3 +1,4 @@
+"""COSITA TOOLKIT."""
 #########################################
 #                                       #
 #                CosTK                  #
@@ -141,9 +142,7 @@ except ImportError:
 
 
 def update_script_from_github(owner, repo, file_path, local_file_path):
-    '''
-    Updating from github, so you dont have to download always from git
-    '''
+    """Update from github, so you dont have to download always from git."""
     try:
 
         if __name__ == "__main__":
@@ -224,24 +223,21 @@ if __name__ == "__main__":
     )
 
 
-def main():
+def _main():
     logging.warning("yet not supported")
 
 
 ############   FUNCTIONS   ############
 
 class memMod:
+    """Requires windows, bcs linux works different way."""
 
-    '''
-    Requires windows, bcs linux works different way
-    '''
-
-    def pid_by_name(target_string=[], exe_name=[]):  # noqa: C901
-
-        '''
-        Get proccess pid by its name, pid needed for memory editing
-        '''
-
+    def pid_by_name(target_string=None, exe_name=None):  # noqa: C901
+        """Get proccess pid by its name, pid needed for memory editing."""
+        if exe_name is None:
+            exe_name = []
+        if target_string is None:
+            target_string = []
         if platform.system() == "Windows":
 
             for proc in psutil.process_iter(['pid', 'name', 'create_time']):
@@ -296,11 +292,7 @@ class memMod:
             return 402
 
     def modify(pid, address, new_value):
-
-        '''
-        Here is the actuall edit of memory
-        '''
-
+        """Memory editing."""
         if platform.system()=="Windows":
 
             new_value = ctypes.c_int(new_value)
@@ -333,11 +325,7 @@ class memMod:
             logging.warning("Non-Windows system detected! skipping...")
             return 402
     def check(pid, address):
-
-        '''
-        get current value
-        '''
-
+        """Get current value."""
         if platform.system()=="Windows":
 
             process_handle = ctypes.windll.kernel32.OpenProcess(
@@ -365,9 +353,10 @@ class memMod:
 
 # github api things
 class github_api:
+    """Functions using Github API."""
 
-    def get_last_info_raw(name,save_place=None,file_name=None):
-
+    def get_last_info_raw(name = str,save_place = None,file_name=None):
+        
         url = f"https://api.github.com/users/{name}/events/public"
         page = requests.get(url)
 
@@ -545,7 +534,11 @@ class PokeAPI:
         return text
 # tools only osinters use
 class osint_framework:
+    """Anything that goes for info of users."""
+
     class universal:
+        """Universal functions, have more at once."""
+
         def check_username(username, service_name="All"):
             base_url = "http://api.instantusername.com"
             services = services_json["services"]
@@ -595,6 +588,8 @@ class OSspecific:
                 pass
             return "Unknown"
     class Windows:
+        """Windows related things."""
+
         def get_windows_product_key():
             try:
                 import winreg
@@ -699,7 +694,7 @@ class Networking:
             logging.error(f"Error getting router gateway IP: {e}")
             return None
 # Other
-class Other:
+class Upload:
     def upload_to_transfer_sh(file_path):
         with open(file_path, 'rb') as file:
             response = requests.put('https://transfer.sh/' + file_path, data=file)
