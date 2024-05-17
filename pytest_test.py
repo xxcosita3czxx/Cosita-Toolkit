@@ -1,5 +1,7 @@
 import os
+
 import cosita_toolkit as costk
+
 
 def test_gitapi_last_info_raw():
     costk.github_api.get_last_info_raw("xxcosita3czxx")
