@@ -40,20 +40,24 @@ SOFTWARE.
 
 try:
     import logging
-except:
+except ImportError:
     print ("FATAL: cannot import logging")
 
 try:
     import coloredlogs
-    coloredlogs.install(level=loglevel, fmt='%(asctime)s %(levelname)s: %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
+    coloredlogs.install(
+        level=loglevel,
+        fmt='%(asctime)s %(levelname)s: %(message)s',
+        datefmt='%Y-%m-%d %H:%M:%S'
+    )
 
-except:
+except ImportError:
     logging.warning("will not be using colors, as the module cannot be found")
 
 try:
     import platform
 
-except:
+except ImportError:
     logging.fatal("Failed to import base module platform")
 
 try:
@@ -65,73 +69,73 @@ try:
     else:
         logging.debug("not importing windows depends")
 
-except:
+except ImportError:
     logging.warning("Windows Dependendencies not found, could have limitations")
 
 try:
     import subprocess
 
-except:
+except ImportError:
     logging.warning("Module subproccess not found, could have limitations")
 
 try:
     import hashlib
 
-except:
+except ImportError:
     logging.warning("Module hashlib not found, could have limitations")
 
 try:
     import netifaces
 
-except:
+except ImportError:
     logging.warning("Module netifaces not found, could have limitations")
 
 try:
     import psutil
 
-except:
+except ImportError:
     logging.warning("Module psutil not found, could have limitations")
 
 try:
     import socket
 
-except:
+except ImportError:
     logging.warning("Module socket not found, could have limitations")
 
 try:
     import threading
 
-except:
+except ImportError:
     logging.warning("Module threading not found, could have limitations")
 
 try:
     import requests
 
-except:
+except ImportError:
     logging.warning("Module requests not found, could have limitations")
 
 try:
     import json
 
-except:
+except ImportError:
     logging.warning("Module json not found, could have limitations")
 
 try:
     from time import gmtime, strftime
 
-except:
+except ImportError:
     logging.warning("Module time not found, could have limitations")
 
 try:
     import os
 
-except:
+except ImportError:
     logging.warning("Module os not found, could have limitations")
 
 try:
     import base64
 
-except:
+except ImportError:
     logging.warning("Module base64 not found, could have limitations")
 
 
@@ -160,7 +164,7 @@ def update_script_from_github(owner, repo, file_path, local_file_path):
 
             try:
 
-                with open(local_file_path, "r") as file:
+                with open(local_file_path) as file:
                     local_content = file.read()
 
                 if github_content != local_content:
@@ -176,7 +180,9 @@ def update_script_from_github(owner, repo, file_path, local_file_path):
                     return 101
                 else:
 
-                    logging.info("No update required. Local script is up to date.")
+                    logging.info(
+                        "No update required. Local script is up to date."
+                    )
 
                     if __name__=="__main__":
                         os.chdir(orig_dir)
@@ -209,7 +215,12 @@ def update_script_from_github(owner, repo, file_path, local_file_path):
         return 400
 
 if __name__ == "__main__":
-    update_script_from_github(owner = "xxcosita3czxx", repo = "Cosita-ToolKit", file_path = "cosita_toolkit.py", local_file_path = "./cosita_toolkit.py")
+    update_script_from_github(
+        owner = "xxcosita3czxx",
+        file_path = "cosita_toolkit.py",
+        local_file_path = "./cosita_toolkit.py",
+        repo = "Cosita-ToolKit"
+    )
 
 
 def main():
@@ -254,12 +265,14 @@ class memMod:
                         try:
 
                             pid = proc.pid
-                            parent_pid = proc.ppid()
-                            parent_name = psutil.Process(parent_pid).name()
-                            exe_name = psutil.Process(proc.pid).exe() if not exe_name else exe_name
+                            #parent_pid = proc.ppid()
+                            #parent_name = psutil.Process(parent_pid).name()
+                            exe_name = psutil.Process(proc.pid).exe() if not exe_name else exe_name  # noqa: E501
 
                             if proc.name() == exe_name:
-                                logging.debug(f"Found process with window title containing {target_string} and PID {pid} and name: {exe_name}")
+                                logging.debug(
+                                    f"Found process with window title containing {target_string} and PID {pid} and name: {exe_name}"  # noqa: E501
+                                )
                                 return pid
 
                         except psutil.AccessDenied:
@@ -268,11 +281,13 @@ class memMod:
                         except psutil.NoSuchProcess:
                             pass
 
-                except:
+                except Exception:
                     pass
 
             else:
-                logging.warning(f"No process found with window title containing {target_string}")
+                logging.warning(
+                    f"No process found with window title containing {target_string}"
+                )
                 return 404
 
         else:
@@ -288,12 +303,28 @@ class memMod:
         if platform.system()=="Windows":
 
             new_value = ctypes.c_int(new_value)
-            process_handle = ctypes.windll.kernel32.OpenProcess(PROCESS_ALL_ACCESS, False, pid)
+            process_handle = ctypes.windll.kernel32.OpenProcess(
+                PROCESS_ALL_ACCESS,
+                False,
+                pid
+            )
             buffer = ctypes.create_string_buffer(SIZEOF_INT)
             bytes_read = ctypes.c_size_t(0)
-            ctypes.windll.kernel32.ReadProcessMemory(process_handle, address, buffer, SIZEOF_INT, ctypes.byref(bytes_read))
-            value = ctypes.c_int.from_buffer(buffer)
-            ctypes.windll.kernel32.WriteProcessMemory(process_handle, address, ctypes.byref(new_value), SIZEOF_INT, None)
+            ctypes.windll.kernel32.ReadProcessMemory(
+                process_handle,
+                address,
+                buffer,
+                SIZEOF_INT,
+                ctypes.byref(bytes_read)
+            )
+            #value = ctypes.c_int.from_buffer(buffer)
+            ctypes.windll.kernel32.WriteProcessMemory(
+                process_handle,
+                address,
+                ctypes.byref(new_value),
+                SIZEOF_INT,
+                None
+            )
             ctypes.windll.kernel32.CloseHandle(process_handle)
             return 1
 
@@ -308,10 +339,20 @@ class memMod:
 
         if platform.system()=="Windows":
 
-            process_handle = ctypes.windll.kernel32.OpenProcess(PROCESS_VM_READ, False, pid)
+            process_handle = ctypes.windll.kernel32.OpenProcess(
+                PROCESS_VM_READ,
+                False,
+                pid
+            )
             buffer = ctypes.create_string_buffer(SIZEOF_INT)
             bytes_read = ctypes.c_size_t(0)
-            ctypes.windll.kernel32.ReadProcessMemory(process_handle, address, buffer, SIZEOF_INT, ctypes.byref(bytes_read))
+            ctypes.windll.kernel32.ReadProcessMemory(
+                process_handle,
+                address,
+                buffer,
+                SIZEOF_INT,
+                ctypes.byref(bytes_read)
+            )
             value = ctypes.c_int.from_buffer(buffer).value
             ctypes.windll.kernel32.CloseHandle(process_handle)
             return value
@@ -330,7 +371,10 @@ class github_api:
         page = requests.get(url)
 
         if file_name is None:
-            file_name = strftime(f"{name}%Y-%m-%d-%H-%M-%S-last-info-raw.json", gmtime())
+            file_name = strftime(
+                f"{name}%Y-%m-%d-%H-%M-%S-last-info-raw.json",
+                gmtime()
+            )
 
         if save_place is not None and not save_place.endswith("/"):
             save_place = save_place + "/"
@@ -353,18 +397,8 @@ class github_api:
         text_json = json.loads(text)
         return text_json
 
-    def pull_repo(repo_dir):
-
-        if os.path.exists(repo_dir):
-            repo = Repo(repo_dir)
-            origin = repo.remote()
-            pull_result = origin.pull()
-            return 101
-        else:
-            return 404
-
     def update_repo_files_http(owner, repo, branch, file_path):
-
+        file_content = None
         def compute_file_hash(file_content):
 
             file_hash = hashlib.sha256(file_content.encode()).hexdigest()
@@ -379,18 +413,25 @@ class github_api:
             if response.status_code == 200:
 
                 try:
-                    file_content = base64.b64decode(response.json()['content']).decode()
+                    file_content = base64.b64decode(
+                        response.json()['content']
+                    ).decode()
                     return file_content
 
                 except KeyError:
-                    logging.error("Failed to extract content from API response:", response.json())
+                    logging.error(
+                        "Failed to extract content from API response:",
+                        response.json()
+                    )
                     return 401
 
             elif response.status_code == 404:
                 logging.debug(f"Ignoring {file_content}")
 
             else:
-                logging.error(f"Failed to fetch file '{file_path}' from the repository '{repo}'. Response code: {response.status_code}")
+                logging.error(
+                    f"Failed to fetch file '{file_path}' from the repository '{repo}'. Response code: {response.status_code}"  # noqa: E501
+                )
                 return 400
 
         url = f"https://api.github.com/repos/{owner}/{repo}/commits/{branch}"
@@ -406,7 +447,9 @@ class github_api:
                     file_hash = compute_file_hash(file_content)
 
                     if file_hash != latest_commit_hash:
-                        logging.info(f"Updates available for '{file_path}'. Downloading...")
+                        logging.info(
+                            f"Updates available for '{file_path}'. Downloading..."
+                        )
                         url = f"https://raw.githubusercontent.com/{owner}/{repo}/{branch}/{file_path}"
                         response = requests.get(url)
         
@@ -416,7 +459,9 @@ class github_api:
                                 f.write(response.content)
 
                         else:
-                            logging.error(f"Failed to download file from '{url}'. Response code: {response.status_code}")
+                            logging.error(
+                                f"Failed to download file from '{url}'. Response code: {response.status_code}"  # noqa: E501
+                            )
                             return 400
 
                         print(f"Updates for '{file_path}' downloaded successfully.")
@@ -427,7 +472,9 @@ class github_api:
                         return 100
 
                 else:
-                    logging.warning("Unable to compute file hash. Check if the file exists.")
+                    logging.warning(
+                        "Unable to compute file hash. Check if the file exists."
+                    )
                     return 404
 
             else:
@@ -437,14 +484,18 @@ class github_api:
                     for file_name in os.listdir('.'):
 
                         if os.path.isfile(file_name):
-                            logging.debug(f"Checking for updates to '{file_name}'...")
+                            logging.debug(
+                                f"Checking for updates to '{file_name}'..."
+                            )
                             file_content = get_file_content(owner, repo, file_name)
 
                             if file_content is not None:
                                 file_hash = compute_file_hash(file_content)
 
                                 if file_hash != latest_commit_hash:
-                                    logging.info(f"Updates available for '{file_name}'. Downloading...")
+                                    logging.info(
+                                        f"Updates available for '{file_name}'. Downloading..."  # noqa: E501
+                                    )
                                     url = f"https://raw.githubusercontent.com/{owner}/{repo}/{branch}/{file_name}"
                                     response = requests.get(url)
 
@@ -454,23 +505,33 @@ class github_api:
                                             f.write(response.content)
 
                                     else:
-                                        logging.error(f"Failed to download file from '{url}'. Response code: {response.status_code}")
+                                        logging.error(
+                                            f"Failed to download file from '{url}'. Response code: {response.status_code}"  # noqa: E501
+                                        )
                                         return "Failed"
 
-                                    logging.info(f"Updates for '{file_name}' downloaded successfully.")
+                                    logging.info(
+                                        f"Updates for '{file_name}' downloaded successfully."  # noqa: E501
+                                    )
 
                                 else:
-                                    logging.info(f"No updates available for '{file_name}'.")
+                                    logging.info(
+                                        f"No updates available for '{file_name}'."
+                                    )
 
                             else:
-                                logging.warning("Unable to compute file hash. Check if the file exists.")
+                                logging.warning(
+                                    "Unable to compute file hash. Check if the file exists."  # noqa: E501
+                                )
 
-                except:
+                except Exception:
                      logging.info("update successful")
                      return 2
 
         else:
-            logging.error(f"Failed to fetch commit information from GitHub. Response code: {response.status_code}")
+            logging.error(
+                f"Failed to fetch commit information from GitHub. Response code: {response.status_code}"  # noqa: E501
+            )
             logging.error("Response content:", response.text)
             return 404
 
@@ -511,7 +572,7 @@ class OSspecific:
     class Linux:
         def get_linux_distro():
             try:
-                with open('/etc/os-release', 'r') as f:
+                with open('/etc/os-release') as f:
                     lines = f.readlines()
                     distro_name = ""
                     distro_id = ""
@@ -544,9 +605,9 @@ class OSspecific:
                 
                 product_key = ""
                 for b in product_key_bytes[52:67]:
-                    product_key += "%02x" % b
+                    product_key += f"{b:02x}"
                     return product_key
-            except:
+            except Exception:
                 return platform.system()
 # Networking tools
 class Networking:
@@ -558,7 +619,7 @@ class Networking:
             local_ip = s.getsockname()[0]
             s.close()
             return local_ip
-        except socket.error:
+        except OSError:
             return None
 
     def check_ip_existence(ip, result_list):
@@ -566,16 +627,24 @@ class Networking:
             # Use the 'ping' command on Linux or Windows to check if the IP exists
             if platform.system() == "Linux":
                 logging.debug(f"checking {ip}")
-                output = subprocess.check_output(["ping", "-c", "1", ip], stderr=subprocess.STDOUT, text=True)
-                if "1 packets transmitted," in output and "0 received" not in output:
+                output = subprocess.check_output(
+                    ["ping", "-c", "1", ip],
+                    stderr=subprocess.STDOUT,
+                    text=True
+                )
+                if "1 packets transmitted," in output and "0 received" not in output:  # noqa: E501
                     result_list.append(ip)
                     logging.info(f"Checked IP: {ip}")
             elif platform.system() == "Windows":
-                output = subprocess.check_output(["ping", "-n", "1", ip], stderr=subprocess.STDOUT, text=True)
+                output = subprocess.check_output(
+                    ["ping", "-n", "1", ip],
+                    stderr=subprocess.STDOUT,
+                    text=True
+                )
                 if "Received = 1" in output:
                     result_list.append(ip)
                     logging.info(f"Checked IP: {ip}")
-        except subprocess.CalledProcessError as e:
+        except subprocess.CalledProcessError:
             pass
         except Exception as e:
             logging.error(f"Error checking IP {ip}: {e}")
@@ -583,7 +652,9 @@ class Networking:
     def scan_lan_ips(subnet, num_threads=4,start_ip = 1,end_ip = 255):
         # Create a list to store results
         if end_ip - start_ip + 1 < num_threads:
-            raise ValueError("Must be same or less threads than checked ip adresses")
+            raise ValueError(
+                "Must be same or less threads than checked ip adresses"
+            )
         result_list = []
 
         # Calculate the number of IPs each thread should check
@@ -594,7 +665,14 @@ class Networking:
         for i in range(num_threads):
             start = start_ip + i * ips_per_thread
             end = start + ips_per_thread - 1
-            thread = threading.Thread(target=Networking.check_ip_range, args=(subnet, start, end, result_list))
+            thread = threading.Thread(
+                target=Networking.check_ip_range,
+                args=(subnet, 
+                    start,
+                    end,
+                    result_list
+                )
+            )
             thread.start()
             threads.append(thread)
 
@@ -633,7 +711,7 @@ try:
     SIZEOF_INT = ctypes.sizeof(ctypes.c_int)
     PROCESS_ALL_ACCESS = 0x1F0FFF
     PROCESS_VM_READ = 0x0010
-except:
+except Exception:
     logging.warning("ctypes not workin/not a windows system, skipping...")
 
 
@@ -686,7 +764,7 @@ services_json_raw = '''{
     { "service": "Crunchyroll", "endpoint": "/check/crunchyroll/{username}" },
     { "service": "DEV Community", "endpoint": "/check/devcommunity/{username}" },
     { "service": "DailyMotion", "endpoint": "/check/dailymotion/{username}" },
-    { "service": "Designspiration", "endpoint": "/check/designspiration/{username}" },
+    { "service": "Designspiration", "endpoint":"/check/designspiration/{username}"},
     { "service": "DeviantART", "endpoint": "/check/deviantart/{username}" },
     { "service": "Disqus", "endpoint": "/check/disqus/{username}" },
     { "service": "Dribbble", "endpoint": "/check/dribbble/{username}" },
@@ -703,7 +781,7 @@ services_json_raw = '''{
     { "service": "Gravatar", "endpoint": "/check/gravatar/{username}" },
     { "service": "Gumroad", "endpoint": "/check/gumroad/{username}" },
     { "service": "HackerOne", "endpoint": "/check/hackerone/{username}" },
-    { "service": "House-Mixes.com", "endpoint": "/check/house-mixes.com/{username}" },
+    { "service": "House-Mixes.com", "endpoint":"/check/house-mixes.com/{username}"},
     { "service": "Houzz", "endpoint": "/check/houzz/{username}" },
     { "service": "HubPages", "endpoint": "/check/hubpages/{username}" },
     { "service": "Homescreen.me", "endpoint": "/check/homescreen.me/{username}" },
