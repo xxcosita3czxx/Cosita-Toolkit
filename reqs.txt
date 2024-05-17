@@ -1,5 +1,4 @@
 pywin32; platform_system == 'Windows'
-ctypes; platform_system == 'Windows'
 psutil
 pytest
 requests
