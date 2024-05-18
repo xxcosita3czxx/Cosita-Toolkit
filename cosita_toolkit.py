@@ -386,7 +386,11 @@ class GithubApi:
         final = str(save_place+file_name)
 
         with open(final, "w") as f:
-            json.dump(json.loads(page.text), f, indent=4)
+            json.dump(
+                json.loads(page.text),
+                f,
+                indent=4,
+            )
 
         return 101
 
@@ -843,7 +847,11 @@ class Upload:
 
         """
         with open(file_path, 'rb') as file:
-            response = requests.put('https://transfer.sh/' + file_path, data=file)  # noqa: S113
+            response = requests.put(
+                'https://transfer.sh/'+ file_path,
+                data=file,
+                timeout=60,
+            )
             return response.text.strip()
 
 

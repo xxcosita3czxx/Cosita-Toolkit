@@ -1,13 +1,22 @@
 import os  # noqa: D100
+from unittest.mock import MagicMock, mock_open, patch
 
-import cosita_toolkit as costk
+import pytest
+import requests
+
+from cosita_toolkit import (
+    GithubApi,
+    MemMod,
+    Networking,
+    OSspecific,
+    PokeAPI,
+    Upload,
+)
 
 
-def test_gitapi_last_info_usr():
-    costk.GithubApi.get_info_usr("xxcosita3czxx")
-def test_osint():
-    costk.OsintFramework.Universal.check_username("cosita3cz","Github")
-def test_pokeapi():
-    costk.PokeAPI.get_pokemon_raw(name="pikachu")
-def test_main():
-    os.system("python cosita_toolkit.py")  # noqa: S605, S607
+def test_networking_get_lan_ip():
+    """Test for getting local internet ip."""
+    with patch('socket.socket') as mock_socket:
+        mock_socket.return_value.getsockname.return_value = ('192.168.1.2',)
+        result = Networking.get_lan_ip()
+        assert result == '192.168.1.2'
