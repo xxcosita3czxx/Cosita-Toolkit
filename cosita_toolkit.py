@@ -564,7 +564,7 @@ class GithubApi:
 class PokeAPI:
     """PokeAPI functions from http API."""
 
-    def get_pokemon_raw(self,name:str):
+    def get_pokemon_raw(name:str):
         """Get json of a pokemon.
 
         Args:
