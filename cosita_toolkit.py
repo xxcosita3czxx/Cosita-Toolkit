@@ -163,7 +163,6 @@ def update_script_from_github(owner:str, repo:str,branch:str, file_path:str, loc
     try:
         orig_dir = os.getcwd()
 
-        # Fetch the latest version of the script from GitHub
         api_url = f"https://api.github.com/repos/{owner}/{repo}/contents/{file_path}?ref={branch}"
         headers = {
             "Accept": "application/vnd.github.v3+json",
