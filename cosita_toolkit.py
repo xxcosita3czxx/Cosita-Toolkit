@@ -344,7 +344,6 @@ class MemMod:
             logging.warning("Unsupported system detected! skipping...")
             return Status.BAD_OS
 
-# github api things
 class GithubApi:
     """Functions using Github API."""
 
@@ -386,7 +385,7 @@ class GithubApi:
                 indent=4,
             )
 
-        return 101
+        return Status.SUCCESS
 
     def get_info_usr(name:str) -> str:
         """Get user info as JSON in variable.
@@ -558,7 +557,7 @@ class GithubApi:
             logging.error("Response content:", response.text)
             return Status.ERR_UNK
 
-# pokeAPI things
+
 class PokeAPI:
     """PokeAPI functions from http API."""
 
@@ -578,7 +577,7 @@ class PokeAPI:
         page = requests.get(url)  # noqa: S113
         text = page.text
         return text
-# tools only osinters use
+
 class OsintFramework:
     """Anything that goes for info of users."""
 
@@ -621,7 +620,6 @@ class OsintFramework:
                     break
             return results
 
-# OS Specific things
 class OSspecific:
     """Functions Specific for some systems."""
 
@@ -683,7 +681,7 @@ class OSspecific:
                     return product_key
             except Exception:
                 return platform.system()
-# Networking tools
+
 class Networking:
     """Functions related to Network."""
 
@@ -696,7 +694,6 @@ class Networking:
 
         """
         try:
-            # Create a socket to the Google DNS server (8.8.8.8)
             s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
             s.connect(("8.8.8.8", 80))
             local_ip = s.getsockname()[0]
@@ -719,7 +716,6 @@ class Networking:
 
         """
         try:
-            # Use the 'ping' command on Linux or Windows to check if the IP exists
             if platform.system() == "Linux":
                 logging.debug(f"checking {ip}")
                 output = subprocess.check_output(
@@ -826,7 +822,7 @@ class Networking:
         except Exception as e:
             logging.error(f"Error getting router gateway IP: {e}")
             return None
-# Other
+
 class Upload:
     """File uploading functions."""
 
@@ -860,8 +856,6 @@ try:
 except Exception:
     logging.warning("ctypes not workin/not a windows system, skipping...")
 
-
-# services.json
 services_json_raw = '''{
   "services": [
     { "service": "Instagram", "endpoint": "/check/instagram/{username}" },
