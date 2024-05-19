@@ -199,14 +199,6 @@ def update_script_from_github(owner:str, repo:str,branch:str, file_path:str, loc
     finally:
         os.chdir(orig_dir)
 
-if __name__ == "__main__":
-    update_script_from_github(
-        owner = "xxcosita3czxx",
-        repo = "Cosita-ToolKit",
-        branch=update_branch,
-        file_path = "cosita_toolkit.py",
-        local_file_path = "./cosita_toolkit.py",
-    )
 
 # DEPRECATED, yet still DONT DELETE.
 #def _main():
@@ -1009,3 +1001,12 @@ services_json_raw = '''{
   ]
 }'''
 services_json = json.loads(services_json_raw)
+
+if __name__ == "__main__":
+    update_script_from_github(
+        owner = "xxcosita3czxx",
+        repo = "Cosita-ToolKit",
+        branch=update_branch,
+        file_path = "cosita_toolkit.py",
+        local_file_path = "./cosita_toolkit.py",
+    )
