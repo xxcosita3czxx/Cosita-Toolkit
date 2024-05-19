@@ -180,7 +180,7 @@ def update_script_from_github(owner:str, repo:str,branch:str, file_path:str, loc
 
             if github_content == local_content:
                 logging.info("No update required. Local script is up to date.")
-                return 100
+                return Status.STANDBY
         else:
             logging.info("Local script not found. Downloading from GitHub.")
 
@@ -188,14 +188,14 @@ def update_script_from_github(owner:str, repo:str,branch:str, file_path:str, loc
             file.write(github_content)
 
         logging.info("Script updated successfully.")
-        return 101
+        return Status.SUCCESS
 
     except requests.RequestException as e:
         logging.error(f"Failed to fetch the script from GitHub: {e}")
-        return 400
+        return Status.ERR_UNK
     except Exception as e:
         logging.error(f"Updater error: {e}")
-        return 400
+        return Status.ERR_UNK
     finally:
         os.chdir(orig_dir)
 
@@ -314,7 +314,7 @@ class MemMod:
                 return 1
             except Exception as e:
                 logging.error(f"Failed to modify memory: {e}")
-                return 402
+                return Status.ERR_UNK
         else:
             logging.warning("Unsupported system detected! skipping...")
             return Status.BAD_OS
@@ -347,7 +347,7 @@ class MemMod:
                 return int.from_bytes(value_bytes, 'little', signed=True)
             except Exception as e:
                 logging.error(f"Failed to read memory: {e}")
-                return 402
+                return Status.ERR_UNK
         else:
             logging.warning("Unsupported system detected! skipping...")
             return Status.BAD_OS
@@ -454,7 +454,7 @@ class GithubApi:
                         "Failed to extract content from API response:",
                         response.json(),
                     )
-                    return 401
+                    return Status.SYNTAX
 
             elif response.status_code == Status.NOT_FOUND:
                 logging.debug(f"Ignoring {file_content}")
@@ -463,7 +463,7 @@ class GithubApi:
                 logging.error(
                     f"Failed to fetch file '{file_path}' from the repository '{repo}'. Response code: {response.status_code}",  # noqa: E501
                 )
-                return 400
+                return Status.ERR_UNK
 
         url = f"https://api.github.com/repos/{owner}/{repo}/commits/{branch}"
         response = requests.get(url)  # noqa: S113
@@ -493,20 +493,20 @@ class GithubApi:
                             logging.error(
                                 f"Failed to download file from '{url}'. Response code: {response.status_code}",  # noqa: E501
                             )
-                            return 400
+                            return Status.ERR_UNK
 
                         logging.info(f"Updates for '{file_path}' downloaded successfully.")  # noqa: E501
-                        return 101
+                        return Status.SUCCESS
 
                     else:
                         logging.info(f"No updates available for '{file_path}'.")
-                        return 100
+                        return Status.STANDBY
 
                 else:
                     logging.warning(
                         "Unable to compute file hash. Check if the file exists.",
                     )
-                    return 404
+                    return Status.NOT_FOUND
 
             else:
 
@@ -539,7 +539,7 @@ class GithubApi:
                                         logging.error(
                                             f"Failed to download file from '{url}'. Response code: {response.status_code}",  # noqa: E501
                                         )
-                                        return "Failed"
+                                        return Status.ERR_UNK
 
                                     logging.info(
                                         f"Updates for '{file_name}' downloaded successfully.",  # noqa: E501
@@ -557,14 +557,14 @@ class GithubApi:
 
                 except Exception:
                      logging.info("update successful")
-                     return 2
+                     return Status.SUCCESS
 
         else:
             logging.error(
                 f"Failed to fetch commit information from GitHub. Response code: {response.status_code}",  # noqa: E501
             )
             logging.error("Response content:", response.text)
-            return 404
+            return Status.ERR_UNK
 
 # pokeAPI things
 class PokeAPI:
