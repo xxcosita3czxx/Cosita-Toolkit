@@ -313,7 +313,15 @@ class MemMod:
             )
             ctypes.windll.kernel32.CloseHandle(process_handle)
             return 1
-
+        if platform.system() == "Linux":
+            try:
+                with open(f"/proc/{pid}/mem", "wb") as mem:
+                    mem.seek(address)
+                    mem.write(new_value.to_bytes(4, 'little'))
+                return 1
+            except Exception as e:
+                logging.error(f"Failed to modify memory: {e}")
+                return 402
         else:
             logging.warning("Unsupported system detected! skipping...")
             return Status.BAD_OS
@@ -338,7 +346,15 @@ class MemMod:
             value = ctypes.c_int.from_buffer(buffer).value
             ctypes.windll.kernel32.CloseHandle(process_handle)
             return value
-
+        if platform.system() == "Linux":
+            try:
+                with open(f"/proc/{pid}/mem", "rb") as mem:
+                    mem.seek(address)
+                    value_bytes = mem.read(4)
+                return int.from_bytes(value_bytes, 'little', signed=True)
+            except Exception as e:
+                logging.error(f"Failed to read memory: {e}")
+                return 402
         else:
             logging.warning("Unsupported system detected! skipping...")
             return Status.BAD_OS
