@@ -33,16 +33,16 @@ Also dont worry about license, i have it included inside code, just dont edit it
 
 Modifing Memory address of pid 9999:
 ```python
-import cosita-toolkit as costk
+import cosita-toolkit as ctkit
 
-costk.memMod.modify(9999,0x03D55E, 37)
+ctkit.MemMod.modify(9999,0x03D55E, 37)
 ```
 
 Getting last info about person on github and storing it inside json file:
 ```python
-import cosita-toolkit as costk
+import cosita-toolkit as ctkit
 
-costk.github_api.get_last_info_raw("xxcosita3czxx", "tmp/res/github_api/", "last-info")
+ctkit.GithubApi.get_last_info_raw("xxcosita3czxx", "tmp/res/github_api/", "last-info")
 # no need to put .json onto the name of file save to
 ```
 
