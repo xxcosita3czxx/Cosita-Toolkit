@@ -159,14 +159,7 @@ except ImportError:
 
 
 def update_script_from_github(owner:str, repo:str,branch:str, file_path:str, local_file_path:str):  # noqa: E501
-    """Update local script from GitHub repository if it's different from the current version.
-
-    :param owner: Owner of the GitHub repository.
-    :param repo: Name of the GitHub repository.
-    :param file_path: Path to the file in the GitHub repository.
-    :param local_file_path: Local path where the file should be saved.
-    :return: Status code indicating the outcome of the update operation.
-    """  # noqa: E501
+    """Update local script from GitHub repository if it's different from the current version."""  # noqa: E501
     try:
         orig_dir = os.getcwd()
 
@@ -209,15 +202,15 @@ def update_script_from_github(owner:str, repo:str,branch:str, file_path:str, loc
 if __name__ == "__main__":
     update_script_from_github(
         owner = "xxcosita3czxx",
+        repo = "Cosita-ToolKit",
         branch=update_branch,
         file_path = "cosita_toolkit.py",
         local_file_path = "./cosita_toolkit.py",
-        repo = "Cosita-ToolKit",
     )
 
-
-def _main():
-    logging.warning("yet not supported")
+# DEPRECATED, yet still DONT DELETE.
+#def _main():
+#    logging.warning("yet not supported")
 
 
 ############   FUNCTIONS   ############
