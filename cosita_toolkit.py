@@ -141,78 +141,53 @@ except ImportError:
     logging.warning("Module base64 not found, could have limitations")
 
 
-def update_script_from_github(owner, repo, file_path, local_file_path):
-    """Update from github, so you dont have to download always from git."""
+def update_script_from_github(owner:str, repo:str, file_path:str, local_file_path:str):  # noqa: E501
+    """Update local script from GitHub repository if it's different from the current version.
+
+    :param owner: Owner of the GitHub repository.
+    :param repo: Name of the GitHub repository.
+    :param file_path: Path to the file in the GitHub repository.
+    :param local_file_path: Local path where the file should be saved.
+    :return: Status code indicating the outcome of the update operation.
+    """  # noqa: E501
     try:
+        orig_dir = os.getcwd()
 
-        if __name__ == "__main__":
-            orig_dir = os.getcwd()
-            os.chdir(os.path.dirname(os.path.abspath(__file__)))
-
+        # Fetch the latest version of the script from GitHub
         api_url = f"https://api.github.com/repos/{owner}/{repo}/contents/{file_path}"
         headers = {
             "Accept": "application/vnd.github.v3+json",
             "User-Agent": "Cosita-Toolkit-Updater",
         }
-        response = requests.get(api_url, headers=headers)  # noqa: S113
-        logging.debug(response.status_code)
+        response = requests.get(api_url, headers=headers,timeout=60)
+        response.raise_for_status()
 
-        if response.status_code == 200:  # noqa: PLR2004
+        github_content = base64.b64decode(response.json()["content"]).decode("utf-8")  # noqa: E501
 
-            github_content = response.json()["content"]
-            github_content = base64.b64decode(github_content).decode("utf-8")
+        if os.path.exists(local_file_path):
+            with open(local_file_path) as file:
+                local_content = file.read()
 
-            try:
-
-                with open(local_file_path) as file:
-                    local_content = file.read()
-
-                if github_content != local_content:
-
-                    with open(local_file_path, "w") as file:
-                        file.write(github_content)
-
-                    logging.info("Script updated successfully.")
-
-                    if __name__=="__main__":
-                        os.chdir(orig_dir)
-
-                    return 101
-                else:
-
-                    logging.info(
-                        "No update required. Local script is up to date.",
-                    )
-
-                    if __name__=="__main__":
-                        os.chdir(orig_dir)
-
-                    return 100
-
-            except FileNotFoundError:
-
-                with open(local_file_path, "w") as file:
-                    file.write(github_content)
-
-                logging.info("Script downloaded and saved successfully.")
-
-                if __name__=="__main__":
-                    os.chdir(orig_dir)
-
-                return 102
+            if github_content == local_content:
+                logging.info("No update required. Local script is up to date.")
+                return 100
         else:
+            logging.info("Local script not found. Downloading from GitHub.")
 
-            logging.warn("Failed to fetch the script from GitHub.")
+        with open(local_file_path, "w") as file:
+            file.write(github_content)
 
-            if __name__=="__main__":
-                os.chdir(orig_dir)
+        logging.info("Script updated successfully.")
+        return 101
 
-            return response.status_code
-
-    except Exception as e:
-        logging.error("updater error ->> "+str(e))
-        os.chdir(orig_dir)
+    except requests.RequestException as e:
+        logging.error(f"Failed to fetch the script from GitHub: {e}")
         return 400
+    except Exception as e:
+        logging.error(f"Updater error: {e}")
+        return 400
+    finally:
+        os.chdir(orig_dir)
 
 if __name__ == "__main__":
     update_script_from_github(
