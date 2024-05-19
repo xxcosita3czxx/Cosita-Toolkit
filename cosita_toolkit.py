@@ -281,8 +281,8 @@ class MemMod:
                 return 404
 
         else:
-            logging.warning("Non-Windows system detected! skipping...")
-            return 402
+            logging.warning("Unsupported system detected! skipping...")
+            return Status.BAD_OS
 
     def modify(pid:int, address:str, new_value:int):
         """Memory editing."""
@@ -315,8 +315,8 @@ class MemMod:
             return 1
 
         else:
-            logging.warning("Non-Windows system detected! skipping...")
-            return 402
+            logging.warning("Unsupported system detected! skipping...")
+            return Status.BAD_OS
     def check(self,pid:int,address:str):
         """Get current value."""
         if platform.system()=="Windows":
@@ -340,8 +340,8 @@ class MemMod:
             return value
 
         else:
-            logging.warning("Non-Windows system detected! skipping...")
-            return 402
+            logging.warning("Unsupported system detected! skipping...")
+            return Status.BAD_OS
 
 # github api things
 class GithubApi:
