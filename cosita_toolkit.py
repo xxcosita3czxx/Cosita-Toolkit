@@ -141,7 +141,7 @@ except ImportError:
     logging.warning("Module base64 not found, could have limitations")
 
 
-def update_script_from_github(owner:str, repo:str, file_path:str, local_file_path:str):  # noqa: E501
+def update_script_from_github(owner:str, repo:str,branch:str, file_path:str, local_file_path:str):  # noqa: E501
     """Update local script from GitHub repository if it's different from the current version.
 
     :param owner: Owner of the GitHub repository.
@@ -154,7 +154,7 @@ def update_script_from_github(owner:str, repo:str, file_path:str, local_file_pat
         orig_dir = os.getcwd()
 
         # Fetch the latest version of the script from GitHub
-        api_url = f"https://api.github.com/repos/{owner}/{repo}/contents/{file_path}"
+        api_url = f"https://api.github.com/repos/{owner}/{repo}/contents/{file_path}?ref={branch}"
         headers = {
             "Accept": "application/vnd.github.v3+json",
             "User-Agent": "Cosita-Toolkit-Updater",
@@ -192,6 +192,7 @@ def update_script_from_github(owner:str, repo:str, file_path:str, local_file_pat
 if __name__ == "__main__":
     update_script_from_github(
         owner = "xxcosita3czxx",
+        branch="devel",
         file_path = "cosita_toolkit.py",
         local_file_path = "./cosita_toolkit.py",
         repo = "Cosita-ToolKit",
