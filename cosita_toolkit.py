@@ -309,7 +309,7 @@ class MemMod:
         else:
             logging.warning("Unsupported system detected! skipping...")
             return Status.BAD_OS
-    def check(self,pid:int,address:str):
+    def check(pid:int,address:str):
         """Get current value."""
         if platform.system()=="Windows":
 
@@ -420,6 +420,22 @@ class GithubApi:
 
         """
         file_content = None
+
+        def get_current_branch(repo_path):
+            head_path = os.path.join(repo_path, '.git', 'HEAD')
+            with open(head_path, 'r') as head_file:
+                ref = head_file.read().strip()
+            if ref.startswith('ref:'):
+                return ref.split('/')[-1]
+            else:
+                return None
+
+        def get_latest_commit_hash(repo_path, branch_name):
+            ref_path = os.path.join(repo_path, '.git', 'refs', 'heads', branch_name)
+            with open(ref_path, 'r') as ref_file:
+                return ref_file.read().strip()
+
+        latest_commit_hash = get_latest_commit_hash(".", get_current_branch("."))
         def compute_file_hash(file_content):
 
             file_hash = hashlib.sha256(file_content.encode()).hexdigest()
