@@ -98,12 +98,6 @@ except ImportError:
     logging.warning("Module subproccess not found, could have limitations")
 
 try:
-    import hashlib
-
-except ImportError:
-    logging.warning("Module hashlib not found, could have limitations")
-
-try:
     import netifaces
 
 except ImportError:
@@ -345,6 +339,31 @@ class MemMod:
 
 class GithubApi:
     """Functions using Github API."""
+
+    def get_repo_contributors(owner:str, repo:str) -> list:
+        """Get repository contributors.
+
+        Args:
+        ----
+            owner (str): Owner of the repo
+            repo (str): Repository
+
+        Returns:
+        -------
+            list: List of contributors
+
+        """
+        url = f"https://api.github.com/repos/{owner}/{repo}/contributors"
+
+        response = requests.get(url,timeout=60)
+        if response.status_code == 200:  # noqa: PLR2004
+            contributors = response.json()
+            return [contributor['login'] for contributor in contributors]
+        else:
+            logging(
+                f"Failed to fetch contributors: {response.status_code} - {response.text}",  # noqa: E501
+            )
+            return []
 
     def get_last_info_raw(name:str,save_place:str,file_name:str):
         """Get last info of user, what he done last.
