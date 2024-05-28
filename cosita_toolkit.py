@@ -156,7 +156,7 @@ def update_script_from_github(owner:str, repo:str,branch:str, file_path:str, loc
     """Update local script from GitHub repository if it's different from the current version."""  # noqa: E501
     try:
         orig_dir = os.getcwd()
-
+        os.chdir(os.path.dirname(os.path.abspath(__file__)))
         api_url = f"https://api.github.com/repos/{owner}/{repo}/contents/{file_path}?ref={branch}"
         headers = {
             "Accept": "application/vnd.github.v3+json",
