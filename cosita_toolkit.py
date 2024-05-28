@@ -9,7 +9,7 @@
 ###  Config  ###############################################
 loglevel="INFO"
 # (Available: "DEBUG", "INFO", "WARNING", "ERROR", "FATAL")
-update_branch="devel"
+update_branch="main"
 # (Available: "main", "devel")
 ############################################################
 
