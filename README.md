@@ -3,7 +3,8 @@
 
 ![GitHub](https://img.shields.io/github/license/xxcosita3czxx/Cosita-ToolKit?color=blue&label=License&logo=github&style=for-the-badge)
 ![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/xxcosita3czxx/Cosita-ToolKit/python-package.yml?label=Tests&logo=github-actions&style=for-the-badge)
-![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/xxcosita3czxx/Cosita-Toolkit/ruff.yml?style=flat-square&label=Ruff%20Tests)
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/xxcosita3czxx/Cosita-Toolkit/ruff.yml?style=for-the-badge&label=Ruff%20Tests)
+
 
 ToolKit for some projects and api's i made, because it makes my life easier and your it can make too!
 
