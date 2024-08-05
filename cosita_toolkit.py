@@ -101,7 +101,7 @@ except ImportError:
     logging.warning("Module subproccess not found, could have limitations")
 
 try:
-    import netifaces
+    import netifaces  # type: ignore
 
 except ImportError:
     logging.warning("Module netifaces not found, could have limitations")
@@ -430,7 +430,19 @@ class GithubApi:
         text = page.text
         text_json = json.loads(text)
         return text_json
-
+    def pull_changes(self,user:str,repo:str,list:list=None,mode:str="all"):
+        """Pull changes from repo using http api."""
+        # List will contain files to pull
+        if mode == "include" and list is not None:
+            pass
+        # List will contain files to exclude
+        if mode == "exclude" and list is not None:
+            pass
+        # Will ignore list and updates all (clone of repo)
+        if mode == "all":
+            pass
+        else:
+            raise ValueError("Bad mode, only 'include','exclude' or 'all' accepted")
 class PokeAPI:
 
     """PokeAPI functions from http API."""
@@ -604,7 +616,7 @@ class Networking:
         try:
             if platform.system() == "Linux":
                 logging.debug(f"checking {ip}")
-                output = subprocess.check_output(
+                output = subprocess.check_output(  # noqa: S603
                     ["ping", "-c", "1", ip],  # noqa: S603, S607
                     stderr=subprocess.STDOUT,
                     text=True,
@@ -613,7 +625,7 @@ class Networking:
                     result_list.append(ip)
                     logging.info(f"Checked IP: {ip}")
             elif platform.system() == "Windows":
-                output = subprocess.check_output(
+                output = subprocess.check_output(  # noqa: S603
                     ["ping", "-n", "1", ip],  # noqa: S603, S607
                     stderr=subprocess.STDOUT,
                     text=True,
