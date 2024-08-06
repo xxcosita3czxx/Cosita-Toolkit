@@ -51,7 +51,7 @@ ctkit.GithubApi.get_last_info_raw("xxcosita3czxx", "tmp/res/github_api/", "last-
 [Documentation](https://github.com/xxcosita3czxx/Cosita-Toolkit/wiki/Documentation)
 ## Feedback
 
-If you have any feedback, please reach out to me on Issue Page or my discord: cosita3cz#2095
+If you have any feedback, please reach out to me on Issue Page or my discord: @cosita3cz
 
 
 ## Support
