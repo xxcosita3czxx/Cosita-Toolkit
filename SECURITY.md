@@ -14,7 +14,7 @@
 
 This tool will never work on 2.7 and down, as the code is build different
 
-* - This may work with some modules, but is no longer supported on issues page nor build tests
+*\ - This may work with some modules, but is no longer supported on issues page nor build tests
 
 ## Reporting a Vulnerability
 
