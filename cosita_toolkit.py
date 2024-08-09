@@ -211,7 +211,11 @@ def update_script_from_github(owner:str, repo:str,branch:str, file_path:str, loc
 
 class MemMod:
 
-    """Requires windows, bcs linux works different way."""
+    """
+    Requires windows, bcs linux works different way.
+
+    Edit Memory of programs in RAM.
+    """
 
     def pid_by_name(target_string=None, exe_name=None):  # noqa: C901
         """Get proccess pid by its name, pid needed for memory editing."""
